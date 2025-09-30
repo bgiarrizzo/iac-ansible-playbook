@@ -1,0 +1,10 @@
+- name: Update WebRoot
+  template:
+    src: templates/webroot.html 
+    dest: /var/www/html/index.nginx-debian.html
+
+- name: Install custom logrotate configuration
+  template:
+    src: templates/logrotate
+    dest: /etc/logrotate.d/nginx
+  notify: restart_logrotate

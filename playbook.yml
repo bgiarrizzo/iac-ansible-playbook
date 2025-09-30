@@ -1,0 +1,18 @@
+- hosts: all
+  remote_user: bgiarrizzo
+  roles:
+    - geerlingguy.docker
+    - geerlingguy.nginx
+    - nginx_custom
+    # - glance
+    # - retroarch_webdav
+    # - jellyfin
+    # - freshrss
+    # - wallabag
+    # - wireguard
+    # - transmission
+    # - webhook-servarr
+    # - flaresolver
+    # - lidarr/sonarr/radarr/bazarr/prowlarr
+    # - inspircd
+    # - znc
