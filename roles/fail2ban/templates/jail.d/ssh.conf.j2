@@ -1,0 +1,12 @@
+# ---------------------------------------------------------
+# This file is managed by Ansible, manual changes will be
+# overwritten on the next run.
+# ---------------------------------------------------------
+
+[sshd]
+backend         = systemd
+journalmatch    = _SYSTEMD_UNIT=ssh.service + _COMM=sshd
+enabled         = true
+maxretry        = 2
+bantime         = 604800 ; 1 week
+findtime        = 600 ; 10 minutes

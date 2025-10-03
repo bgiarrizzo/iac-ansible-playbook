@@ -1,0 +1,25 @@
+- name: Install fail2ban
+  apt:
+    name: fail2ban
+    state: present
+    update_cache: yes
+
+- name: Remove default jail
+  file:
+    path: /etc/fail2ban/jail.d/defaults-debian.conf
+    state: absent
+  notify: restart_fail2ban
+
+- name: Install Jails
+  template:
+    src: "{{ item }}"
+    dest: "/etc/fail2ban/jail.d/{{ item | basename | regex_replace('.j2','') }}"
+  loop: "{{ lookup('fileglob', 'templates/jail.d/*.j2', wantlist=True) }}"
+  notify: restart_fail2ban
+
+- name: Install Actions
+  template:
+    src: "{{ item }}"
+    dest: "/etc/fail2ban/action.d/{{ item | basename | regex_replace('.j2','') }}"
+  loop: "{{ lookup('fileglob', 'templates/action.d/*.j2', wantlist=True) }}"
+  notify: restart_fail2ban

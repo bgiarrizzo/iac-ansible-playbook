@@ -1,0 +1,51 @@
+# ---------------------------------------------------------
+# This file is managed by Ansible, manual changes will be
+# overwritten on the next run.
+# ---------------------------------------------------------
+
+# Fail2Ban IRC Webhook Action
+
+[Definition]
+
+# Notify on Jail Startup
+actionstart = curl -X POST "<webhook>" \
+    -H "Content-Type: application/json" \
+    -d '{
+            "eventType": "START",
+            "message": "{{ fail2ban_notification_message_jailstart }}"
+        }'
+
+
+# Notify on Jail Shutdown
+actionstop = curl -X POST "<webhook>" \
+    -H "Content-Type: application/json" \
+    -d '{
+            "eventType": "STOP",
+            "message": "{{ fail2ban_notification_message_jailstop }}"
+        }'
+
+
+# Notify on Ban
+actionban = curl -X POST "<webhook>" \
+    -H "Content-Type: application/json" \
+    -d '{
+            "eventType": "BAN",
+            "message": "{{ fail2ban_notification_message_ban }}"
+        }'
+
+
+# Notify on Unban
+actionunban = curl -X POST "<webhook>" \
+    -H "Content-Type: application/json" \
+    -d '{
+            "eventType": "UNBAN",
+            "message": "{{ fail2ban_notification_message_unban }}"
+        }'
+
+[Init]
+name = default
+hostname = {{ fail2ban_hostname }}
+
+# Discord Webhook URL
+
+webhook = "http://localhost:8001/"

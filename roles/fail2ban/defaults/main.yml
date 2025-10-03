@@ -1,0 +1,9 @@
+---
+fail2ban_hostname: "cloe.giarrizzo.fr"
+fail2ban_action_irc_notifications_webhook_url: "http://localhost:8001/"
+fail2ban_action_irc_notifications_irc_channel: "#fail2ban"
+
+fail2ban_notification_message_jailstart: "<hostname> [JAILSTART] - <name>"
+fail2ban_notification_message_jailstop: "<hostname> [JAILSTOP] - <name>"
+fail2ban_notification_message_ban: "<hostname> [BAN] - [Jail : <name>] => IP: `<ip>` (https://db-ip.com/<ip>) for <bantime> hours after **<failures>** failure(s)."
+fail2ban_notification_message_unban: "<hostname> [UNBAN] - [Jail : <name>] => IP: <ip> (https://db-ip.com/<ip>)"
