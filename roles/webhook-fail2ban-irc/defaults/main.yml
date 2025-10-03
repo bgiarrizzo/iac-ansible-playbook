@@ -1,0 +1,9 @@
+
+webhook_fail2ban_server_name: "webhook-fail2ban.192.168.1.17.nip.io"
+webhook_fail2ban_container_port: 8001
+
+webhook_fail2ban_irc_repo: "git@github.com:bgiarrizzo/webhook-fail2ban-irc.git"
+webhook_fail2ban_irc_dest: "/home/bgiarrizzo/code/Apps/webhook-fail2ban-irc"
+
+webhook_fail2ban_irc_server: "192.168.1.17"
+webhook_fail2ban_irc_channel: "#fail2ban"

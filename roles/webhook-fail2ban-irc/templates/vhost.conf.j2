@@ -1,0 +1,29 @@
+# ---------------------------------------------------------
+# This file is managed by Ansible, manual changes will be
+# overwritten on the next run.
+# ---------------------------------------------------------
+
+server {
+    listen 80;
+    server_name {{ webhook_fail2ban_server_name }};
+
+    access_log /var/log/nginx/{{ webhook_fail2ban_server_name }}/access.log;
+    error_log /var/log/nginx/{{ webhook_fail2ban_server_name }}/error.log warn;
+
+    location / {
+        proxy_pass http://localhost:{{ webhook_fail2ban_container_port }}/;
+
+	proxy_http_version 1.1;
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        proxy_pass_header X-Transmission-Session-Id;
+        proxy_redirect off;
+
+        proxy_read_timeout 300;
+        proxy_send_timeout 300;
+    }
+}

@@ -2,10 +2,12 @@
   remote_user: bgiarrizzo
   roles:
     - fail2ban
-    # - security
-    # - geerlingguy.docker
-    # - geerlingguy.nginx
+    - security
+    - geerlingguy.docker
+    - geerlingguy.nginx
     - nginx
+    - webhook-servarr-irc
+    - webhook-fail2ban-irc
     # - glance
     # - retroarch_webdav
     # - jellyfin
@@ -13,7 +15,7 @@
     # - wallabag
     # - wireguard
     # - transmission
-    # - webhook-servarr
+    
     # - flaresolver
     # - lidarr/sonarr/radarr/bazarr/prowlarr
     # - inspircd

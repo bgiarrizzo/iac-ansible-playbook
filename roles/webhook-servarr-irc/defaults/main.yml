@@ -1,0 +1,9 @@
+
+webhook_servarr_server_name: "webhook-servarr.192.168.1.17.nip.io"
+webhook_servarr_container_port: 8000
+
+webhook_servarr_irc_repo: "git@github.com:bgiarrizzo/webhook-servarr-irc.git"
+webhook_servarr_irc_dest: "/home/bgiarrizzo/code/Apps/webhook-servarr-irc"
+
+webhook_servarr_irc_server: "192.168.1.17"
+webhook_servarr_irc_channel: "#servarr"

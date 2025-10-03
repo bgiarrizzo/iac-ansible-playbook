@@ -1,0 +1,44 @@
+---
+
+- name: Create Nginx Virtual Host for IRC Webhook
+  ansible.builtin.template:
+    src: vhost.conf.j2
+    dest: "/etc/nginx/sites-enabled/{{ webhook_servarr_server_name }}"
+    mode: '0644'
+  notify: restart_nginx
+
+- name: Test nginx config
+  ansible.builtin.command: nginx -t
+  register: nginx_test
+  changed_when: false
+  failed_when: nginx_test.rc != 0
+
+# TODO: git clone repo if not exists
+
+
+- name: Build webhook-servarr-irc docker image
+  community.docker.docker_image:
+    source: build
+    build: 
+      dockerfile: "{{ webhook_servarr_irc_dest }}/docker/Dockerfile"
+      path: "{{ webhook_servarr_irc_dest }}"
+      args:
+        BUILD: "PROD"
+    name: webhook-servarr-irc
+    tag: latest
+
+- name: Ensure webhook-servarr-irc container is running
+  community.docker.docker_container:
+    name: webhook-servarr-irc
+    image: webhook-servarr-irc:latest
+    state: started
+    restart_policy: unless-stopped
+    ports:
+      - "{{ webhook_servarr_container_port }}:8000"
+    env:
+      TZ: Europe/Paris
+      IRC_SERVER: "{{ webhook_servarr_irc_server }}"
+      IRC_CHANNEL: "{{ webhook_servarr_irc_channel }}"
+
+
+    
