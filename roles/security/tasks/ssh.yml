@@ -1,0 +1,15 @@
+- name: Install SSH root authorized keys
+  template:
+    src: templates/ssh/root-authorized_keys.j2
+    dest: /root/.ssh/authorized_keys
+    mode: '0600'
+    owner: root
+    group: root
+
+- name: Install SSH bgiarrizzo authorized keys
+  template:
+    src: templates/ssh/bgiarrizzo-authorized_keys.j2
+    dest: /home/bgiarrizzo/.ssh/authorized_keys
+    mode: '0600'
+    owner: bgiarrizzo
+    group: bgiarrizzo
