@@ -1,9 +1,11 @@
 - hosts: all
   remote_user: bgiarrizzo
   roles:
-    - geerlingguy.docker
-    - geerlingguy.nginx
-    - nginx_custom
+    - fail2ban
+    # - security
+    # - geerlingguy.docker
+    # - geerlingguy.nginx
+    - nginx
     # - glance
     # - retroarch_webdav
     # - jellyfin

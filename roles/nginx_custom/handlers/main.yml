@@ -1,4 +1,0 @@
-- name: restart_logrotate
-  ansible.builtin.service:
-    name: logrotate
-    state: restarted
