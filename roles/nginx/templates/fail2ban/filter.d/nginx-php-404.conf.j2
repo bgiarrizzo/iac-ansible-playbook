@@ -1,0 +1,12 @@
+# ---------------------------------------------------------
+# This file is managed by Ansible, manual changes will be
+# overwritten on the next run.
+# ---------------------------------------------------------
+
+# block all access to phpinfo files in all folders 
+
+[Definition]
+
+failregex = ^<HOST> .* \"(GET|POST) .*((\/[^\/ ]+)*\/)?[^\/ ]*php[^\/ ]*.*\" 404
+
+ignoreregex =

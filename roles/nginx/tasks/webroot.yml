@@ -1,0 +1,9 @@
+- name: Remove Default WebRoot
+  file:
+    path: /var/www/html/index.nginx-debian.html
+    state: absent
+
+- name: New WebRoot
+  template:
+    src: templates/www/index.html
+    dest: /var/www/html/index.html

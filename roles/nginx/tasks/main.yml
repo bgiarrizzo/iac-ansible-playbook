@@ -1,0 +1,5 @@
+- include_tasks: webroot.yml
+
+- include_tasks: logrotate.yml
+
+- include_tasks: fail2ban.yml

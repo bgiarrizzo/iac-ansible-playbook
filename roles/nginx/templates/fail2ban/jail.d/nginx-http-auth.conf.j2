@@ -1,0 +1,14 @@
+# ---------------------------------------------------------
+# This file is managed by Ansible, manual changes will be
+# overwritten on the next run.
+# ---------------------------------------------------------
+
+[nginx-http-auth]
+enabled    = true
+port       = http,https
+filter     = nginx-http-auth
+bantime    = 604800 ; 1 week
+findtime   = 600	; 10 minutes
+maxretry   = 1
+logpath    = /var/log/nginx/error.log
+	/var/log/nginx/**/error.log

@@ -1,0 +1,14 @@
+---
+- name: Install fail2ban filter
+  template:
+    src: "{{ item }}"
+    dest: /etc/fail2ban/filter.d/{{ item | basename | regex_replace('.j2','') }}
+  loop: "{{ lookup('fileglob', 'templates/fail2ban/filter.d/nginx-*.j2', wantlist=True) }}"
+  notify: restart_fail2ban
+
+- name: Install fail2ban jail
+  template:
+    src: "{{ item }}"
+    dest: /etc/fail2ban/jail.d/{{ item | basename | regex_replace('.j2','') }}
+  loop: "{{ lookup('fileglob', 'templates/fail2ban/jail.d/nginx-*.j2', wantlist=True) }}"
+  notify: restart_fail2ban

@@ -1,0 +1,10 @@
+# ---------------------------------------------------------
+# This file is managed by Ansible, manual changes will be
+# overwritten on the next run.
+# ---------------------------------------------------------
+
+# expand to all variants of .git, .git/, .git/config .git/HEAD, .gitignore, etc.
+
+[Definition]
+failregex = <HOST> -.*"(GET|POST).*\.git(?:\/[^.]+)* HTTP.*"
+ignoreregex =
