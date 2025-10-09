@@ -4,5 +4,6 @@
 # ---------------------------------------------------------
 
 [Definition]
-failregex = ^<HOST> - - \[.*\] "(GET|POST) /(?:\.git|\.git/[^ ]*) HTTP.*"
+failregex = ^<HOST> - - \[.*\] "(GET|POST|HEAD|OPTIONS) (?:/[^ "]+)*/\.git(?:/[^ "]+)* HTTP/.*"
+
 ignoreregex =
