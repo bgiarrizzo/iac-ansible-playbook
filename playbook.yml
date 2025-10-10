@@ -1,8 +1,8 @@
 - hosts: all
   remote_user: bgiarrizzo
   roles:
-    - fail2ban
     - security
+    - fail2ban
     - geerlingguy.docker
     - geerlingguy.nginx
     - nginx
@@ -15,7 +15,6 @@
     # - wallabag
     # - wireguard
     # - transmission
-    
     # - flaresolver
     # - lidarr/sonarr/radarr/bazarr/prowlarr
     # - inspircd
