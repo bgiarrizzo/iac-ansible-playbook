@@ -1,0 +1,37 @@
+server {
+    listen 80;
+    listen [::]:80;
+
+    server_name {{ item.url }} {% if item.url.split('.') | length == 2 %} www.{{ item.url }}{% endif %};
+
+    return 301 https://{{ item.url }}$request_uri;
+}
+
+server {  
+    listen 443 ssl;
+    listen [::]:443 ssl;
+
+    http2 on;
+
+    server_name {{ item.url }} {% if item.url.split('.') | length == 2 %} www.{{ item.url }}{% endif %};
+
+    root /var/www/{{ item.url }};  
+    index index.html index.htm;  
+    disable_symlinks off;
+
+    # Fichiers de logs: 
+    error_log /var/log/nginx/{{ item.url }}/error.log; 
+    access_log /var/log/nginx/{{ item.url }}/access.log; 
+
+    location / { 
+        try_files $uri $uri/ =404; 
+    }  
+
+    # LetsEncrypt Config
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+
+    # LetsEncrypt SSL Certificates & Keys
+    ssl_certificate /etc/letsencrypt/live/{{ item.url }}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{{ item.url }}/privkey.pem;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+}

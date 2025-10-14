@@ -8,6 +8,8 @@
     - nginx
     - webhook-servarr-irc
     - webhook-fail2ban-irc
+    - website-family
+    # - website-hackwithhyweene
     # - glance
     # - retroarch_webdav
     # - jellyfin
@@ -16,6 +18,6 @@
     # - wireguard
     # - transmission
     # - flaresolver
-    # - lidarr/sonarr/radarr/bazarr/prowlarr
+    # - servarr
     # - inspircd
     # - znc
