@@ -4,7 +4,6 @@
     - security
     - fail2ban
     - geerlingguy.docker
-    - geerlingguy.nginx
     - nginx
     - webhook-servarr-irc
     - webhook-fail2ban-irc

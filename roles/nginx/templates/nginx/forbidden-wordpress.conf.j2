@@ -1,0 +1,10 @@
+# Interdire l'accès direct à wp-config.php et .htaccess
+location = /wp-config.php { deny all; }
+location = /.htaccess { deny all; }
+location = /readme.html { deny all; }
+location = /xmlrpc.php { deny all; }
+
+# Interdire l'accès aux répertoires WordPress
+location ~* /(wp-admin|wp-includes|wp-content/uploads|wp-content/plugins|wp-content/themes)/.*$ {
+    deny all;
+}

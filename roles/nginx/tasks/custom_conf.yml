@@ -1,0 +1,12 @@
+---
+- name: Ensure custom configuration directory exists
+  file:
+    path: /etc/nginx/custom.d
+    state: directory
+
+- name: Install Custom Configurations
+  template:
+    src: "{{ item }}"
+    dest: /etc/nginx/custom.d/{{ item | basename | regex_replace('.j2','') }}
+  loop: "{{ lookup('fileglob', 'templates/nginx/*.j2', wantlist=True) }}"
+  notify: restart_nginx

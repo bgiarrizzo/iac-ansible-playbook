@@ -1,0 +1,8 @@
+location ~* /(\.git|\.gitignore|\.gitattributes|\.gitmodules|\.gitconfig|\.git-credentials|\.gitkeep)$ {
+    deny all;
+}
+
+# Interdire l'accès aux fichiers dans un répertoire .git
+location ~* /\.git/.*$ {
+    deny all;
+}

@@ -7,3 +7,8 @@
   ansible.builtin.service:
     name: fail2ban
     state: restarted
+
+- name: restart_nginx
+  ansible.builtin.service:
+    name: nginx
+    state: restarted

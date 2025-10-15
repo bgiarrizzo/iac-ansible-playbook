@@ -40,7 +40,15 @@
   with_items: "{{ website_list }}"
   notify:
     - restart_nginx
- 
+
+- name: Create or update cronjob for stats generation via goaccess
+  ansible.builtin.cron:
+    name: "Generate stats for {{ item.url }}"
+    minute: "*/10"
+    user: root
+    job: /bin/bash -c 'd=$(date +"%Y-%m"); mkdir -p /var/www/{{ item.url }}/stats/$d && goaccess /var/log/nginx/{{ item.url }}/access.log --unknowns-as-crawlers --ignore-crawlers --log-format=COMBINED --exclude-ip=192.168.1.0-192.168.1.255 -o /var/www/{{ item.url }}/stats/$d/index.html' >> /var/log/goaccess_cron.log
+  with_items: "{{ website_list }}"
+
 - name: Ensure Nginx config is OK
   ansible.builtin.command: nginx -t
   notify:
