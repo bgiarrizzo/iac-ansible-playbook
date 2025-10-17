@@ -1,0 +1,22 @@
+---
+
+glance_path_to_config_on_host: /media/Store/apps/glance
+
+certbot_email: bruno@giarrizzo.fr
+
+glance_apps:
+  - name: glance
+    nginx:
+      server_name: home.giarrizzo.fr
+      https: true
+    docker:
+      image:
+        name: glanceapp/glance
+        tag: latest
+      restart: unless-stopped
+      volumes:
+        - "{{ glance_path_to_config_on_host }}/config/:/app/config:rw"
+        - "{{ glance_path_to_config_on_host }}/assets:/app/assets:rw"
+      ports:
+        - "8080:8080"
+      recreate: true

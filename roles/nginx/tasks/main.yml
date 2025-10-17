@@ -1,6 +1,6 @@
-- name: Run geerlingguy.nginx role
-  include_role:
-    name: geerlingguy.nginx
+# - name: Run geerlingguy.nginx role
+#   include_role:
+#     name: geerlingguy.nginx
 
 - name: Install GoAccess to generate stats from access logs
   ansible.builtin.apt:

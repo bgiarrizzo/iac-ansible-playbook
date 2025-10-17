@@ -1,0 +1,48 @@
+---
+
+- name: Create Nginx Virtual Host for IRC Webhook
+  ansible.builtin.template:
+    src: vhost.conf.j2
+    dest: "/etc/nginx/sites-enabled/{{ item.server_name }}"
+    mode: '0644'
+  notify: restart_nginx
+  with_items: "{{ webhook_list }}"
+
+- name: Test nginx config
+  ansible.builtin.command: nginx -t
+  register: nginx_test
+  changed_when: false
+  failed_when: nginx_test.rc != 0
+
+# TODO: git clone repo if not exists
+
+
+- name: Build docker image
+  community.docker.docker_image:
+    source: build
+    build: 
+      dockerfile: "{{ item.irc_dest }}/docker/Dockerfile"
+      path: "{{ item.irc_dest }}"
+      args:
+        BUILD: "PROD"
+    name: "{{ item.name }}"
+    tag: latest
+  
+  with_items: "{{ webhook_list }}"
+
+- name: Ensure container is running
+  community.docker.docker_container:
+    name: "{{ item.name }}"
+    image: "{{ item.name }}:latest"
+    state: started
+    restart_policy: unless-stopped
+    recreate: true
+    ports:
+      - "{{ item.container_port }}:8000"
+    env:
+      TZ: Europe/Paris
+      IRC_SERVER: "{{ item.irc_server }}"
+      IRC_CHANNEL: "{{ item.irc_channel }}"
+  with_items: "{{ webhook_list }}"
+
+    

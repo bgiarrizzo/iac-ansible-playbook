@@ -1,0 +1,21 @@
+certbot_email: bruno@giarrizzo.fr
+
+website_list:
+  - name: website-giarrizzo-bruno
+    repo: git@github.com:bgiarrizzo/website-giarrizzo-bruno.git
+    url: bruno.giarrizzo.fr
+  - name: website-giarrizzo-jessica
+    repo: git@github.com:bgiarrizzo/website-giarrizzo-jessica.git
+    url: jessica.giarrizzo.fr
+  - name: website-giarrizzo-lyanna
+    repo: git@github.com:bgiarrizzo/website-giarrizzo-lyanna.git
+    url: lyanna.giarrizzo.fr
+  - name: website-giarrizzo-bj-wedding
+    repo: git@github.com:bgiarrizzo/website-giarrizzo-bj-wedding.git
+    url: wedding.giarrizzo.fr
+  - name: website-giarrizzo-family
+    repo: git@github.com:bgiarrizzo/website-giarrizzo-family.git
+    url: giarrizzo.fr
+  - name: website-hackwithhyweene
+    repo: git@github.com:bgiarrizzo/website-hackwithhyweene.git
+    url: hack-with-hyweene.com

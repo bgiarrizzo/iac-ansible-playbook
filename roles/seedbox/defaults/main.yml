@@ -1,0 +1,186 @@
+certbot_email: bruno@giarrizzo.fr
+
+seedbox_path_to_config_on_host: /media/Store/apps
+seedbox_library_folder_path: /media/Store/medias
+seedbox_downloads_folder_path: /media/Store/downloads
+
+seedbox_apps:
+  - name: sonarr
+    nginx:
+      server_name: sonarr.giarrizzo.fr
+      https: true
+    docker:
+      image:
+        name: linuxserver/sonarr
+        tag: latest
+      container_name: sonarr
+      restart: unless-stopped
+      depends_on:
+        - prowlarr
+      environment:
+        PUID: "1000"
+        PGID: "1000"
+        TZ: "Europe/Paris"
+      volumes:
+        - "{{ seedbox_path_to_config_on_host }}/sonarr/:/config:rw"
+        - "{{ seedbox_downloads_folder_path }}/:/downloads:rw"
+        - "{{ seedbox_library_folder_path }}/tv/:/tv:rw"
+      ports:
+        - "8989:8989"
+      recreate: true
+  - name: radarr
+    nginx:
+      server_name: radarr.giarrizzo.fr
+      https: true
+    docker:
+      image: 
+        name: linuxserver/radarr
+        tag: latest
+      container_name: radarr
+      restart: unless-stopped
+      depends_on:
+        - prowlarr
+      environment:
+        PUID: "1000"
+        PGID: "1000"
+        TZ: "Europe/Paris"
+      volumes:
+        - "{{ seedbox_path_to_config_on_host }}/radarr/:/config:rw"
+        - "{{ seedbox_downloads_folder_path }}/:/downloads:rw"
+        - "{{ seedbox_library_folder_path }}/movies/:/movies:rw"
+      ports:
+        - "7878:7878"
+      recreate: true
+  - name: lidarr
+    nginx:
+      server_name: lidarr.giarrizzo.fr
+      https: true
+    docker:
+      image: 
+        name: linuxserver/lidarr
+        tag: develop
+      container_name: lidarr
+      restart: unless-stopped
+      depends_on:
+        - prowlarr
+      environment:
+        PUID: "1000"
+        PGID: "1000"
+        TZ: "Europe/Paris"
+      volumes:
+        - "{{ seedbox_path_to_config_on_host }}/lidarr/:/config:rw"
+        - "{{ seedbox_downloads_folder_path }}/:/downloads:rw"
+        - "{{ seedbox_library_folder_path }}/music/:/music:rw"
+      ports:
+        - "8686:8686"
+      recreate: true
+  - name: bazarr
+    nginx:
+      server_name: bazarr.giarrizzo.fr
+      https: true
+    docker:
+      image: 
+        name: linuxserver/bazarr
+        tag: latest
+      container_name: bazarr
+      restart: unless-stopped
+      depends_on:
+        - radarr
+        - sonarr
+      environment:
+        PUID: "1000"
+        PGID: "1000"
+        TZ: "Europe/Paris"
+      volumes:
+        - "{{ seedbox_path_to_config_on_host }}/bazarr/:/config:rw"
+        - "{{ seedbox_library_folder_path }}/movies/:/movies:rw"
+        - "{{ seedbox_library_folder_path }}/tv/:/tv:rw"
+      ports:
+        - "6767:6767"
+      recreate: true
+  - name: prowlarr
+    nginx:
+      server_name: prowlarr.giarrizzo.fr
+      https: true
+    docker:
+      image:
+        name: linuxserver/prowlarr
+        tag: latest
+      container_name: prowlarr
+      restart: unless-stopped
+      depends_on:
+        - wireguard
+        - flaresolverr
+      environment:
+        PUID: "1000"
+        PGID: "1000"
+        TZ: "Europe/Paris"
+      volumes:
+        - "{{ seedbox_path_to_config_on_host }}/prowlarr/:/config:rw"
+      ports:
+        - "9696:9696"
+      recreate: true
+  - name: wireguard
+    docker:
+      image:
+        name: linuxserver/wireguard
+        tag: latest
+      container_name: wireguard
+      cap_add:
+        - NET_ADMIN
+        - SYS_MODULE
+      privileged: true
+      volumes:
+        - "{{ seedbox_path_to_config_on_host }}/wireguard/wg0.conf:/config/wg0.conf:ro"
+      environment:
+        PUID: "1000"
+        PGID: "1000"
+        TZ: "Europe/Paris"
+        LOG_CONFS: "true"
+      ports:
+        - "9091:9091"
+      recreate: true
+      restart: unless-stopped
+  - name: transmission
+    nginx:
+      server_name: transmission.192.168.1.17.nip.io
+      https: false
+    docker:
+      image:
+        name: linuxserver/transmission
+        tag: latest
+      container_name: transmission
+      depends_on:
+        - wireguard
+      network_mode: "container:wireguard"
+      volumes:
+        - "{{ seedbox_path_to_config_on_host }}/transmission/:/config"
+        - "{{ seedbox_downloads_folder_path }}/:/downloads"
+      environment:
+        PUID: "1000"
+        PGID: "1000"
+        TZ: "Europe/Paris"
+        DOCKER_MODS: "jordanpotter/docker-mods:transmission-nat-pmp"
+      restart: unless-stopped
+      ports:
+        - "9091:9091"
+      recreate: true
+  
+  - name: flaresolverr
+    nginx:
+      server_name: flaresolverr.192.168.1.17.nip.io
+      https: false
+    docker:
+      image: 
+        name: flaresolverr/flaresolverr
+        tag: latest
+      container_name: flaresolverr
+      environment:
+        PUID: "1000"
+        PGID: "1000"
+        CAPTCHA_SOLVER: "none"
+        LANG: "fr_FR"
+      restart: unless-stopped
+      ports:
+        - "8191:8191"
+      recreate: true

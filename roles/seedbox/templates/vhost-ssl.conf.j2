@@ -1,0 +1,53 @@
+# ---------------------------------------------------------
+# This file is managed by Ansible, manual changes will be
+# overwritten on the next run.
+# ---------------------------------------------------------
+
+server {
+    listen 80;
+    listen [::]:80;
+
+    server_name {{ item.nginx.server_name }};
+
+    return 301 https://{{ item.nginx.server_name }}$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+
+    http2 on;
+
+    server_name {{ item.nginx.server_name }};
+
+    # Fichiers de logs: 
+    error_log /var/log/nginx/{{ item.nginx.server_name }}/error.log; 
+    access_log /var/log/nginx/{{ item.nginx.server_name }}/access.log; 
+
+    location / {
+        proxy_pass http://localhost:{{ item.docker.ports[0].split(':')[0] }}/;
+
+	    proxy_http_version 1.1;
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        proxy_pass_header X-Transmission-Session-Id;
+        proxy_redirect off;
+
+        proxy_read_timeout 300;
+        proxy_send_timeout 300;
+    }
+
+    include /etc/nginx/custom.d/forbidden-*.conf;
+
+    # LetsEncrypt Config
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+
+    # LetsEncrypt SSL Certificates & Keys
+    ssl_certificate /etc/letsencrypt/live/{{ item.nginx.server_name }}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{{ item.nginx.server_name }}/privkey.pem;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+}

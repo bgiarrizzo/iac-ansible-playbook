@@ -5,18 +5,11 @@
     - fail2ban
     - geerlingguy.docker
     - nginx
-    - webhook-servarr-irc
-    - webhook-fail2ban-irc
-    - website-family
-    # - website-hackwithhyweene
-    # - glance
-    # - retroarch_webdav
-    # - jellyfin
-    # - freshrss
-    # - wallabag
-    # - wireguard
-    # - transmission
-    # - flaresolver
-    # - servarr
-    # - inspircd
-    # - znc
+    - irc
+    - webhooks
+    - seedbox
+    - websites
+    - glance
+    - mediacenter
+    - newsreaders
+    - retroarch

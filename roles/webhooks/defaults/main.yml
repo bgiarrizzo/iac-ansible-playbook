@@ -1,0 +1,16 @@
+
+webhook_list:
+  - name: webhook-fail2ban-irc
+    server_name: "webhook-fail2ban.192.168.1.17.nip.io"
+    container_port: 8001
+    irc_repo: "git@github.com:bgiarrizzo/webhook-fail2ban-irc.git"
+    irc_dest: "/home/bgiarrizzo/code/Apps/webhook-fail2ban-irc"
+    irc_server: "192.168.1.17"
+    irc_channel: "#fail2ban"
+  - name: webhook-servarr-irc
+    server_name: "webhook-servarr.192.168.1.17.nip.io"
+    container_port: 8000
+    irc_repo: "git@github.com:bgiarrizzo/webhook-servarr-irc.git"
+    irc_dest: "/home/bgiarrizzo/code/Apps/webhook-servarr-irc"
+    irc_server: "192.168.1.17"
+    irc_channel: "#servarr"

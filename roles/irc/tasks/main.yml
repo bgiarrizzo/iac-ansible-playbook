@@ -1,0 +1,20 @@
+---
+
+- name: Docker Pull Images
+  ansible.builtin.docker_image:
+    name: "{{ item.docker.image.name }}"
+    tag: "{{ item.docker.image.tag }}"
+    source: pull
+  with_items: "{{ irc_list }}"
+
+- name: Run Containers
+  ansible.builtin.docker_container:
+    name: "{{ item.name }}"
+    image: "{{ item.docker.image.name }}:{{ item.docker.image.tag }}"
+    ports: "{{ item.docker.ports | default(omit) }}"
+    env: "{{ item.docker.environment | default(omit) }}"
+    volumes: "{{ item.docker.volumes | default(omit) }}"
+    restart_policy: "{{ item.docker.restart | default(omit) }}"
+    state: started
+    recreate: "{{ item.docker.recreate | default(omit) }}"
+  with_items: "{{ irc_list }}"

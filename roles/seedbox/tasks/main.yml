@@ -1,0 +1,47 @@
+---
+
+- name: Docker Pull Images
+  community.docker.docker_image:
+    name: "{{ item.docker.image.name }}"
+    tag: "{{ item.docker.image.tag | default('latest') }}"
+    source: pull
+  with_items: "{{ seedbox_apps }}"
+
+- name: Docker Run Containers
+  community.docker.docker_container:
+    name: "{{ item.docker.container_name }}"
+    image: "{{ item.docker.image.name }}:{{ item.docker.image.tag | default('latest') }}"
+    state: started
+    restart_policy: "{{ item.docker.restart | default('unless-stopped') }}"
+    env: "{{ item.docker.environment | default(omit) }}"
+    volumes: "{{ item.docker.volumes | default(omit) }}"
+    ports: "{{ item.docker.ports | default(omit) if 'transmission' not in item.name else omit }}"
+    network_mode: "{{ item.docker.network_mode | default(omit) }}"
+    capabilities: "{{ item.docker.cap_add | default(omit) }}"
+    privileged: "{{ item.docker.privileged | default(omit) }}"
+    recreate: "{{ item.docker.recreate | default(false) }}"
+  with_items: "{{ seedbox_apps }}"
+
+- name: Create Nginx Virtual Host for Seedbox Apps
+  ansible.builtin.template:
+    src: "vhost{% if item.nginx.https %}-ssl{% endif %}.conf.j2"
+    dest: "/etc/nginx/sites-enabled/{{ item.nginx.server_name }}"
+    mode: '0644'
+  notify: restart_nginx
+  with_items: "{{ seedbox_apps }}"
+  when: ("wireguard" not in item.name)
+  
+- name: Get Let's Encrypt certificates
+  ansible.builtin.command: >
+    certbot certonly --nginx -d {{ item.nginx.server_name }}
+    --non-interactive --agree-tos --email {{ certbot_email }}
+  with_items: "{{ seedbox_apps }}"
+  notify:
+    - restart_nginx
+  when: ("wireguard" not in item.name) and (item.nginx.https | default(false))
+
+- name: Test Nginx Configuration
+  ansible.builtin.command: nginx -t
+  register: nginx_test
+  changed_when: false
+  failed_when: "'successful' not in nginx_test.stderr"

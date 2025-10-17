@@ -1,0 +1,30 @@
+---
+
+mediacenter_path_to_config_on_host: /media/Store/apps
+mediacenter_library_folder_path: /media/Store/medias
+
+certbot_email: bruno@giarrizzo.fr
+
+mediacenter_apps:
+  - name: jellyfin
+    nginx:
+      server_name: jellyfin.giarrizzo.fr
+      https: true
+    docker:
+      image:
+        name: linuxserver/jellyfin
+        tag: latest
+      restart: unless-stopped
+      environment:
+        PUID: "1000"
+        PGID: "1000"
+        TZ: "Europe/Paris"
+      volumes:
+        - "{{ mediacenter_path_to_config_on_host }}/jellyfin/:/config:rw"
+        - "{{ mediacenter_library_folder_path }}/tv/:/tvshows:rw"
+        - "{{ mediacenter_library_folder_path }}/movies/:/movies:rw"
+        - "{{ mediacenter_library_folder_path }}/music/:/music:rw"
+        - "{{ mediacenter_library_folder_path }}/books/:/books:rw"
+      ports:
+        - "8096:8096"
+      recreate: true

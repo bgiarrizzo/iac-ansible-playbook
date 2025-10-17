@@ -1,0 +1,37 @@
+---
+
+newsreaders_path_to_config_on_host: /media/Store/apps
+
+certbot_email: bruno@giarrizzo.fr
+
+newsreader_apps:
+  - name: freshrss
+    nginx:
+      server_name: freshrss.giarrizzo.fr
+      https: true
+    docker:
+      image:
+        name: freshrss/freshrss
+        tag: latest
+      restart: unless-stopped
+      volumes:
+        - "{{ newsreaders_path_to_config_on_host }}/freshrss/config/:/app/config:rw"
+        - "{{ newsreaders_path_to_config_on_host }}/freshrss/assets:/app/assets:rw"
+      ports:
+        - "8555:80"
+      recreate: true
+  - name: wallabag
+    nginx:
+      server_name: wallabag.giarrizzo.fr
+      https: true
+    docker:
+      image:
+        name: wallabag/wallabag
+        tag: latest
+      restart: unless-stopped
+      volumes:
+        - "{{ newsreaders_path_to_config_on_host }}/wallabag/images:/var/www/wallabag/web/assets/images:rw"
+        - "{{ newsreaders_path_to_config_on_host }}/wallabag/data:/var/www/wallabag/data:rw"
+      ports:
+        - "8081:80"
+      recreate: true

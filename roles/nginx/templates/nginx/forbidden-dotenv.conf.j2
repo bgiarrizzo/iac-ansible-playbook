@@ -3,7 +3,10 @@
 # overwritten on the next run.
 # ---------------------------------------------------------
 
-# Interdire tout accès à xmlrpc quel que soit le chemin
-location ~* /xmlrpc.php$ {
+location ~* /(\.env)$ {
+    deny all;
+}
+
+location ~* /\.env/.*$ {
     deny all;
 }

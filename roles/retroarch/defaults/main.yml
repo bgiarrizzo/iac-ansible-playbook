@@ -1,0 +1,22 @@
+---
+
+retroarch_path_to_config_on_host: /media/Store/apps/retroarch
+
+certbot_email: bruno@giarrizzo.fr
+
+retroarch_apps:
+  - name: retroarch
+    nginx:
+      server_name: retroarch.giarrizzo.fr
+      https: true
+    docker:
+      image:
+        name: "bytemark/webdav"
+        tag: "2.4"
+      restart: unless-stopped
+      volumes:
+        - "{{ retroarch_path_to_config_on_host }}/configs/user.passwd:/user.passwd:ro"
+        - "{{ retroarch_path_to_config_on_host }}/storage/:/var/lib/dav:rw"
+      ports:
+        - "8082:80"
+      recreate: "{{ item.docker.recreate | default(true) }}"

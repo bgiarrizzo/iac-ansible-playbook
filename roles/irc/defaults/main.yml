@@ -1,0 +1,31 @@
+certbot_email: bruno@giarrizzo.fr
+
+irc_path_to_config_on_host: /media/Store/apps
+
+irc_list:
+  - name: inspircd
+    docker:
+      image:
+        name: inspircd/inspircd-docker
+        tag: latest
+      ports:
+        - "6667:6667"
+        - "6697:6697"
+      environment:
+        INSP_NET_SUFFIX: ".giarrizzo.fr"
+        INSP_NET_NAME: "Giarrizzo"
+        INSP_SERVER_NAME: "irc.giarrizzo.fr"
+        INSP_ADMIN_NAME: "Hyweene"
+      volumes:
+        - "{{ irc_path_to_config_on_host }}/inspircd/:/inspircd/conf/"
+      restart: unless-stopped
+  - name: znc
+    docker:
+      image:
+        name: znc
+        tag: latest
+      ports:
+        - "6501:6501"
+      volumes:
+        - "{{ irc_path_to_config_on_host }}/znc/:/znc-data/"
+      restart: unless-stopped
