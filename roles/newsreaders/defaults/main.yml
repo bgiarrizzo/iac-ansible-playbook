@@ -11,12 +11,11 @@ newsreader_apps:
       https: true
     docker:
       image:
-        name: freshrss/freshrss
+        name: linuxserver/freshrss
         tag: latest
       restart: unless-stopped
       volumes:
-        - "{{ newsreaders_path_to_config_on_host }}/freshrss/config/:/app/config:rw"
-        - "{{ newsreaders_path_to_config_on_host }}/freshrss/assets:/app/assets:rw"
+        - "{{ newsreaders_path_to_config_on_host }}/freshrss/:/config:rw"
       ports:
         - "8555:80"
       recreate: true
