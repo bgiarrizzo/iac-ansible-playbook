@@ -15,7 +15,7 @@
     restart_policy: "{{ item.docker.restart | default('unless-stopped') }}"
     env: "{{ item.docker.environment | default(omit) }}"
     volumes: "{{ item.docker.volumes | default(omit) }}"
-    ports: "{{ item.docker.ports | default(omit) if 'transmission' not in item.name else omit }}"
+    ports: "{{ item.docker.ports if (item.docker.ports is defined and item.docker.ports | length > 0) else omit }}"
     network_mode: "{{ item.docker.network_mode | default(omit) }}"
     capabilities: "{{ item.docker.cap_add | default(omit) }}"
     privileged: "{{ item.docker.privileged | default(omit) }}"
@@ -29,7 +29,7 @@
     mode: '0644'
   notify: restart_nginx
   with_items: "{{ seedbox_apps }}"
-  when: ("wireguard" not in item.name)
+  when: (item.nginx is defined and "nip.io" not in item.nginx.server_name)
   
 - name: Get Let's Encrypt certificates
   ansible.builtin.command: >
@@ -38,7 +38,7 @@
   with_items: "{{ seedbox_apps }}"
   notify:
     - restart_nginx
-  when: ("wireguard" not in item.name) and (item.nginx.https | default(false))
+  when: (item.nginx is defined and "nip.io" not in item.nginx.server_name)
 
 - name: Test Nginx Configuration
   ansible.builtin.command: nginx -t

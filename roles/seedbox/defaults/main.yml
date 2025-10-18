@@ -162,10 +162,7 @@ seedbox_apps:
         TZ: "Europe/Paris"
         DOCKER_MODS: "jordanpotter/docker-mods:transmission-nat-pmp"
       restart: unless-stopped
-      ports:
-        - "9091:9091"
       recreate: true
-  
   - name: flaresolverr
     nginx:
       server_name: flaresolverr.192.168.1.17.nip.io
