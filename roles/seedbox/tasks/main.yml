@@ -29,7 +29,7 @@
     mode: '0644'
   notify: restart_nginx
   with_items: "{{ seedbox_apps }}"
-  when: (item.nginx is defined and "nip.io" not in item.nginx.server_name)
+  when: (item.nginx is defined)
   
 - name: Get Let's Encrypt certificates
   ansible.builtin.command: >
