@@ -1,10 +1,10 @@
 ---
 
 - name: Docker Pull Image
-  community.docker.docker_image:
+  community.docker.docker_image_pull:
     name: "{{ item.docker.image.name }}"
     tag: "{{ item.docker.image.tag | default('latest') }}"
-    source: pull
+    pull: always
   with_items: "{{ retroarch_apps }}"
 
 - name: Docker Run Containers
