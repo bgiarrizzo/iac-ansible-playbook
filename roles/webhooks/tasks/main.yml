@@ -14,8 +14,14 @@
   changed_when: false
   failed_when: nginx_test.rc != 0
 
-# TODO: git clone repo if not exists
-
+- name: Ensure webhook source is present
+  ansible.builtin.git:
+    repo: "{{ item.irc_repo }}"
+    dest: "{{ item.irc_dest }}"
+    version: main
+  with_items: "{{ webhook_list }}"
+  become: true
+  become_user: bgiarrizzo
 
 - name: Build docker image
   community.docker.docker_image:
@@ -28,6 +34,12 @@
     name: "{{ item.name }}"
     tag: latest
   
+  with_items: "{{ webhook_list }}"
+
+- name: Ensure webhook container is absent
+  community.docker.docker_container:
+    name: "{{ item.name }}"
+    state: absent
   with_items: "{{ webhook_list }}"
 
 - name: Ensure container is running
