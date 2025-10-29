@@ -5,19 +5,19 @@
 # Updated on {{ template_run_date }}
 # ---------------------------------------------------------
 
-# Interdire l'accès aux fichiers php
-location ~* \.(php|php0)$ {
+# Interdire l'accès aux APIs communes utilisées pour les documentations et tests
+
+# /api
+location ~* (/api-docs/swagger.json|/api/gql|/api/graphql|/api/swagger.json)$ {
     deny all;
 }
 
-location ~* \.php/.*$ {
+# /graphql 
+location ~* (/graphql|/graphql/api)$ {
     deny all;
 }
 
-location ~* phpinfo$ {
-    deny all;
-}
-
-location ~* phpinfo/$ {
+# /swagger & swagger-ui
+location ~* (/swagger|/swagger-ui|/swagger/index.html|/swagger/swagger-ui.html|/swagger/v1/swagger.json)$ {
     deny all;
 }

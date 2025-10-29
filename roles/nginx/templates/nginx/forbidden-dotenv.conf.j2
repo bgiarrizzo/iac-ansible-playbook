@@ -2,11 +2,17 @@
 # This file is managed by Ansible, manual changes will be
 # overwritten on the next run.
 # ---------------------------------------------------------
+# Updated on {{ template_run_date }}
+# ---------------------------------------------------------
 
 location ~* /(\.env)$ {
     deny all;
 }
 
 location ~* /\.env/.*$ {
+    deny all;
+}
+
+location ~* /.*\.env$ {
     deny all;
 }
