@@ -10,6 +10,6 @@ location = /readme.html { deny all; }
 location = /xmlrpc.php { deny all; }
 
 # Interdire l'accès aux répertoires WordPress
-location ~* /(wp-admin|wp-includes|wp-content/uploads|wp-content/plugins|wp-content/themes)/.*$ {
+location ~* /(wp-admin|wp-includes|wp-content|wp-content/uploads|wp-content/plugins|wp-content/themes)/.*$ {
     deny all;
 }
