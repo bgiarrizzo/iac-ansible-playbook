@@ -14,9 +14,17 @@
   become: yes
   become_user: bgiarrizzo
 
+- name: Set Crontab that will pull latest changes every minute
+  ansible.builtin.cron:
+    name: "Git pull for {{ item.url }}"
+    minute: "*/1"
+    user: bgiarrizzo
+    job: "cd /home/bgiarrizzo/code/Websites/{{ item.url }} && git pull --ff-only | grep -qv 'Déjà à jour.' && make build"
+  with_items: "{{ website_list }}"
+
 - name: Link website repo to Nginx root
   ansible.builtin.file:
-    src: "/home/bgiarrizzo/code/Websites/{{ item.url }}/{% if item.url == 'hack-with-hyweene.com' %}build{% else %}src{% endif %}/"
+    src: "/home/bgiarrizzo/code/Websites/{{ item.url }}/build/"
     dest: "/var/www/{{ item.url }}"
     state: link
     force: yes
@@ -47,12 +55,20 @@
     state: directory
   with_items: "{{ website_list }}"
 
-- name: Create or update cronjob for stats generation via goaccess
+- name: Create or update cronjob for stats generation via goaccess (without crawlers)
   ansible.builtin.cron:
     name: "Generate stats for {{ item.url }}"
     minute: "*/10"
     user: root
     job: /bin/bash -c 'd=$(date +"%Y-%m"); mkdir -p /var/www/{{ item.url }}/stats/$d && goaccess /var/log/nginx/{{ item.url }}/access.log --unknowns-as-crawlers --ignore-crawlers --log-format=COMBINED --exclude-ip=192.168.1.0-192.168.1.255 -o /var/www/{{ item.url }}/stats/$d/index.html' >> /var/log/goaccess_cron.log
+  with_items: "{{ website_list }}"
+
+- name: Create or update cronjob for stats generation via goaccess (with crawlers)
+  ansible.builtin.cron:
+    name: "Generate stats with crawlers for {{ item.url }}"
+    minute: "*/10"
+    user: root
+    job: /bin/bash -c 'd=$(date +"%Y-%m"); mkdir -p /var/www/{{ item.url }}/stats/$d && goaccess /var/log/nginx/{{ item.url }}/access.log --log-format=COMBINED --exclude-ip=192.168.1.0-192.168.1.255 -o /var/www/{{ item.url }}/stats/$d/with-crawlers.html' >> /var/log/goaccess_cron.log
   with_items: "{{ website_list }}"
 
 - name: Ensure Nginx config is OK
