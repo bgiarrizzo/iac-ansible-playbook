@@ -3,8 +3,8 @@
   roles:
     - security
     - fail2ban
-    - geerlingguy.docker
     - nginx
+    - geerlingguy.docker
     - irc
     - webhooks
     - seedbox
