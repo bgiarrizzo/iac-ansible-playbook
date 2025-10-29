@@ -1,0 +1,16 @@
+# ---------------------------------------------------------
+# This file is managed by Ansible, manual changes will be
+# overwritten on the next run.
+# ---------------------------------------------------------
+# Updated on {{ template_run_date }}
+# ---------------------------------------------------------
+
+[nginx-forbidden]
+enabled    = true
+port       = http,https
+filter     = nginx-forbidden
+bantime    = 604800 ; 1 week
+findtime   = 60		; 1 minutes
+maxretry   = 5
+logpath    = /var/log/nginx/access.log
+	/var/log/nginx/**/access.log
