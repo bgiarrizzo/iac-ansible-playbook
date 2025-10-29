@@ -1,0 +1,9 @@
+# ---------------------------------------------------------
+# This file is managed by Ansible, manual changes will be
+# overwritten on the next run.
+# ---------------------------------------------------------
+
+# Interdire l'accès aux fichiers php
+location ~* \.php$ {
+    deny all;
+}
