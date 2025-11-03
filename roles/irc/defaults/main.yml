@@ -19,6 +19,7 @@ irc_list:
       volumes:
         - "{{ irc_path_to_config_on_host }}/inspircd/:/inspircd/conf/"
       restart: unless-stopped
+      # recreate: true
   - name: znc
     docker:
       image:

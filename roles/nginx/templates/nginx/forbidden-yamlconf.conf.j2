@@ -5,19 +5,6 @@
 # Updated on {{ template_run_date }}
 # ---------------------------------------------------------
 
-# Interdire l'accès aux fichiers php
-# location ~* \.(php|php0)$ {
-#     deny all;
-# }
-
-# location ~* \.php/.*$ {
-#     deny all;
-# }
-
-location ~* phpinfo$ {
-    deny all;
-}
-
-location ~* phpinfo/$ {
+location ~* /.config.(yaml|yml)$ {
     deny all;
 }

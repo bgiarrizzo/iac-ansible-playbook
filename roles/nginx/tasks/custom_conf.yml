@@ -10,3 +10,8 @@
     dest: /etc/nginx/custom.d/{{ item | basename | regex_replace('.j2','') }}
   loop: "{{ lookup('fileglob', 'templates/nginx/*.j2', wantlist=True) }}"
   notify: restart_nginx
+
+- name: Ensure Nginx config is OK
+  ansible.builtin.command: nginx -t
+  notify:
+    - restart_nginx

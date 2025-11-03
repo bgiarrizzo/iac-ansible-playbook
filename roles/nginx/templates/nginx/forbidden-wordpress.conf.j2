@@ -5,13 +5,19 @@
 # Updated on {{ template_run_date }}
 # ---------------------------------------------------------
 
-# Interdire l'accès direct à wp-config.php et .htaccess
-location = /wp-config.php { deny all; }
-location = /.htaccess { deny all; }
-location = /readme.html { deny all; }
-location = /xmlrpc.php { deny all; }
+location ~* /wp-config.php.*$ {
+    deny all; 
+}
 
-# Interdire l'accès aux répertoires WordPress
-location ~* /(wp-admin|wp-includes|wp-content|wp-content/uploads|wp-content/plugins|wp-content/themes)/.*$ {
+location ~* /(wp-admin|wp-admin/).*$ {
     deny all;
 }
+
+location ~* /(wp-includes|wp-includes/).*$ {
+    deny all;
+}
+
+location ~* /(wp-content|wp-content/).*$ {
+    deny all;
+}
+
