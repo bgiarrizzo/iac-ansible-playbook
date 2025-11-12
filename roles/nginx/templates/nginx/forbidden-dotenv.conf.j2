@@ -5,14 +5,9 @@
 # Updated on {{ template_run_date }}
 # ---------------------------------------------------------
 
-location ~* /(\.env)$ {
-    deny all;
-}
+# Bloque tous les fichiers .env, avec éventuellement
+# des préfixes/suffixes contenant -, _, ou .
 
-location ~* /\.env/.*$ {
-    deny all;
-}
-
-location ~* /.*\.env$ {
+location ~* /[._-]*env[._-]*$ {
     deny all;
 }

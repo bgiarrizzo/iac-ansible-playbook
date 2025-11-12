@@ -5,11 +5,15 @@
 # Updated on {{ template_run_date }}
 # ---------------------------------------------------------
 
-location ~* /(\.git|\.gitignore|\.gitattributes|\.gitmodules|\.gitconfig|\.git-credentials|\.gitkeep)$ {
+# Bloquer tout répertoire .git, quel que soit le chemin
+
+location ~* /\.git(/|$) {
     deny all;
 }
 
-# Interdire l'accès aux fichiers dans un répertoire .git
-location ~* /\.git/.*$ {
+# Bloquer tous les fichiers de config Git (gitignore, gitattributes, etc.)
+# en prenant en compte les préfixes/suffixes avec -, _, ou .
+
+location ~* /[._-]*git(ignores?|attributes|modules|config|credentials|keep)[._-]*$ {
     deny all;
 }

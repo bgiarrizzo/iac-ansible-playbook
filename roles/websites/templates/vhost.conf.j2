@@ -34,7 +34,9 @@ server {
         try_files $uri $uri/ =404; 
     }
 
-    include /etc/nginx/custom.d/forbidden-*.conf;
+    {% for forbidden_item in nginx_forbiden_list %}
+        include /etc/nginx/custom.d/forbidden-{{ forbidden_item }}.conf;
+    {% endfor %}
 
     # LetsEncrypt Config
     include /etc/letsencrypt/options-ssl-nginx.conf;

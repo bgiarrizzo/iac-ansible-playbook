@@ -8,6 +8,13 @@
   notify: restart_nginx
   with_items: "{{ webhook_list }}"
 
+- name: Create Log Directory for Webhook Apps
+  ansible.builtin.file:
+    path: "/var/log/nginx/{{ item.server_name }}"
+    state: directory
+    mode: '0755'
+  with_items: "{{ webhook_list }}"
+
 - name: Test nginx config
   ansible.builtin.command: nginx -t
   register: nginx_test

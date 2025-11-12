@@ -38,6 +38,13 @@
   notify:
     - restart_nginx
 
+- name: Create Log Directory for Website Apps
+  ansible.builtin.file:
+    path: "/var/log/nginx/{{ item.url }}"
+    state: directory
+    mode: '0755'
+  with_items: "{{ website_list }}"
+
 - name: Get Let's Encrypt certificates
   ansible.builtin.command: >
     certbot certonly --nginx -d {{ item.url }}
@@ -60,7 +67,7 @@
     name: "Generate stats for {{ item.url }}"
     minute: "*/10"
     user: root
-    job: /bin/bash -c 'd=$(date +"%Y-%m"); mkdir -p /var/www/{{ item.url }}/stats/$d && goaccess /var/log/nginx/{{ item.url }}/access.log --unknowns-as-crawlers --ignore-crawlers --log-format=COMBINED --exclude-ip=192.168.1.0-192.168.1.255 -o /var/www/{{ item.url }}/stats/$d/index.html' >> /var/log/goaccess_cron.log
+    job: /bin/bash -c 'd=$(date +"%Y-%m"); mkdir -p /var/www/{{ item.url }}/stats/$d && grep -Ev "{{ goaccess_exclude_patterns | join("|") }}" /var/log/nginx/{{ item.url }}/access.log | goaccess - --unknowns-as-crawlers --ignore-crawlers --log-format=COMBINED --exclude-ip={{ goaccess_exclude_ips | join(",") }} -o /var/www/{{ item.url }}/stats/$d/index.html' >> /var/log/goaccess_cron.log
   with_items: "{{ website_list }}"
 
 - name: Create or update cronjob for stats generation via goaccess (with crawlers)
@@ -68,7 +75,7 @@
     name: "Generate stats with crawlers for {{ item.url }}"
     minute: "*/10"
     user: root
-    job: /bin/bash -c 'd=$(date +"%Y-%m"); mkdir -p /var/www/{{ item.url }}/stats/$d && goaccess /var/log/nginx/{{ item.url }}/access.log --log-format=COMBINED --exclude-ip=192.168.1.0-192.168.1.255 -o /var/www/{{ item.url }}/stats/$d/with-crawlers.html' >> /var/log/goaccess_cron.log
+    job: /bin/bash -c 'd=$(date +"%Y-%m"); mkdir -p /var/www/{{ item.url }}/stats/$d && grep -Ev "{{ goaccess_exclude_patterns | join("|") }}" /var/log/nginx/{{ item.url }}/access.log | goaccess - --log-format=COMBINED --exclude-ip={{ goaccess_exclude_ips | join(",") }} -o /var/www/{{ item.url }}/stats/$d/with-crawlers.html' >> /var/log/goaccess_cron.log
   with_items: "{{ website_list }}"
 
 - name: Ensure Nginx config is OK

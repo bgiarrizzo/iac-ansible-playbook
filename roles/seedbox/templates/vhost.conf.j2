@@ -28,4 +28,8 @@ server {
         proxy_read_timeout 300;
         proxy_send_timeout 300;
     }
+
+    {% for forbidden_item in nginx_forbiden_list %}
+        include /etc/nginx/custom.d/forbidden-{{ forbidden_item }}.conf;
+    {% endfor %}
 }

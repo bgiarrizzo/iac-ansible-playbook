@@ -1,0 +1,9 @@
+nginx_forbiden_list:
+  - "apis"
+  - "dotenv"
+  - "git"
+  - "phpbase"
+  - "phptools"
+  - "wordpress"
+  - "xmlrpc"
+  - "yamlconf"

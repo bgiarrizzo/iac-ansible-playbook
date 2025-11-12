@@ -43,7 +43,11 @@ server {
         proxy_send_timeout 300;
     }
 
-    include /etc/nginx/custom.d/forbidden-*.conf;
+    {% for forbidden_item in nginx_forbiden_list %}
+        {% if forbidden_item != "phpbase" %}
+            include /etc/nginx/custom.d/forbidden-{{ forbidden_item }}.conf;
+        {% endif %}
+    {% endfor %}
 
     # LetsEncrypt Config
     include /etc/letsencrypt/options-ssl-nginx.conf;

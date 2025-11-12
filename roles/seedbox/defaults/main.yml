@@ -5,6 +5,27 @@ seedbox_library_folder_path: /media/Store/medias
 seedbox_downloads_folder_path: /media/Store/downloads
 
 seedbox_apps:
+  - name: tidarr
+    nginx:
+      server_name: tidarr.192.168.1.17.nip.io
+      https: false
+    docker:
+      image:
+        name: cstaelen/tidarr
+        tag: latest
+      container_name: tidarr
+      restart: unless-stopped
+      environment:
+        PUID: "1000"
+        PGID: "1000"
+        TZ: "Europe/Paris"
+        
+      volumes:
+        - "{{ seedbox_path_to_config_on_host }}/tidarr/:/home/app/standalone/shared:rw"
+        - "{{ seedbox_library_folder_path }}/music/:/home/app/standalone/library:rw"
+      ports:
+        - "8484:8484"
+      recreate: true
   - name: sonarr
     nginx:
       server_name: sonarr.giarrizzo.fr

@@ -5,19 +5,20 @@
 # Updated on {{ template_run_date }}
 # ---------------------------------------------------------
 
-# Interdire l'accès aux APIs communes utilisées pour les documentations et tests
+# Bloquer phpinfo (fichier, script, ou répertoire)
 
-# /api
-location ~* (/api-docs/swagger.json|/api/gql|/api/graphql|/api/swagger.json)$ {
+location ~* /[._-]*phpinfo([._-]*php)?(/|$) {
     deny all;
 }
 
-# /graphql 
-location ~* (/graphql|/graphql/api)$ {
+# Bloquer phpMyAdmin et ses alias (phpmyadmin, pma)
+
+location ~* /(phpmyadmin|pma)([._-]*php)?(/|$) {
     deny all;
 }
 
-# /swagger & swagger-ui
-location ~* (/swagger|/swagger-ui|/swagger/index.html|/swagger/swagger-ui.html|/swagger/v1/swagger.json)$ {
+# Bloquer Adminer (outil de gestion PHP)
+
+location ~* /adminer([._-]*php)?(/|$) {
     deny all;
 }

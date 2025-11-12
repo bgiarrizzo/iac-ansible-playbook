@@ -9,7 +9,18 @@
     src: "{{ item }}"
     dest: /etc/nginx/custom.d/{{ item | basename | regex_replace('.j2','') }}
   loop: "{{ lookup('fileglob', 'templates/nginx/*.j2', wantlist=True) }}"
+  when: item | basename != 'vhost-default.conf.j2'
   notify: restart_nginx
+
+- name: Remove default nginx vhost
+  file:
+    path: /etc/nginx/sites-available/default
+    state: absent
+    
+- name: Setup default nginx vhost
+  template:
+    src: "templates/nginx/vhost-default.conf.j2"
+    dest: "/etc/nginx/sites-enabled/default"
 
 - name: Ensure Nginx config is OK
   ansible.builtin.command: nginx -t

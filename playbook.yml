@@ -1,15 +1,15 @@
 - hosts: all
   remote_user: bgiarrizzo
   roles:
-    - security
-    - fail2ban
+    # - security
+    # - fail2ban
     - nginx
-    - geerlingguy.docker
-    - irc
-    - webhooks
-    - seedbox
+    # - geerlingguy.docker
+    # - irc
+    # - webhooks
+    # - seedbox
     - websites
-    - glance
-    - mediacenter
-    - newsreaders
-    - retroarch
+    # - glance
+    # - mediacenter
+    # - newsreaders
+    # - retroarch

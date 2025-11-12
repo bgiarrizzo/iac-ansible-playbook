@@ -14,6 +14,8 @@
 	notifempty
 	create 0640 www-data adm
 	sharedscripts
+	dateext
+    dateformat .%Y-%m
 	prerotate
 		if [ -d /etc/logrotate.d/httpd-prerotate ]; then \
 			run-parts /etc/logrotate.d/httpd-prerotate; \
@@ -33,6 +35,8 @@
 	notifempty
 	create 0640 www-data adm
 	sharedscripts
+	dateext
+    dateformat .%Y-%m
 	prerotate
 		if [ -d /etc/logrotate.d/httpd-prerotate ]; then \
 			run-parts /etc/logrotate.d/httpd-prerotate; \

@@ -5,19 +5,26 @@
 # Updated on {{ template_run_date }}
 # ---------------------------------------------------------
 
-location ~* /wp-config.php.*$ {
-    deny all; 
-}
+# Bloquer l'accès au fichier wp-config.php quel que soit le suffixe
 
-location ~* /(wp-admin|wp-admin/).*$ {
+location ~* /wp-config\.php.*$ {
     deny all;
 }
 
-location ~* /(wp-includes|wp-includes/).*$ {
+# Bloquer l'accès aux dossiers et sous-dossiers wp-admin, wp-includes et wp-content
+
+location ~* ^/(wp-admin|wp-includes|wp-content)(/|$) {
     deny all;
 }
 
-location ~* /(wp-content|wp-content/).*$ {
+# Bloquer xmlrpc.php (souvent cible d'attaques)
+
+location ~* /xmlrpc\.php$ {
     deny all;
 }
 
+# Bloquer l'accès à wp-login.php sauf à certaines IP si besoin
+
+location ~* /wp-login\.php$ {
+    deny all;
+}

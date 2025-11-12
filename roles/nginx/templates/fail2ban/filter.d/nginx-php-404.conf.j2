@@ -9,6 +9,6 @@
 
 [Definition]
 
-failregex = ^<HOST> .* \"(GET|POST) .*((\/[^\/ ]+)*\/)?[^\/ ]*php[^\/ ]*.*\" 404
+failregex = ^<HOST> .* \"(GET|POST) [^ ]*\.php[^ ]* HTTP/.*\" 404
 
 ignoreregex =

@@ -5,19 +5,14 @@
 # Updated on {{ template_run_date }}
 # ---------------------------------------------------------
 
-# Interdire l'accès aux fichiers php
-# location ~* \.(php|php0)$ {
-#     deny all;
-# }
+# Interdire l'accès aux APIs GraphQL
 
-# location ~* \.php/.*$ {
-#     deny all;
-# }
-
-location ~* phpinfo$ {
+location ~* /graphql(/api)?$ {
     deny all;
 }
 
-location ~* phpinfo/$ {
+# Bloquer aussi toute URL qui commence par /graphql (ex: /graphql/subpath)
+
+location ~* ^/graphql(/|$) {
     deny all;
 }

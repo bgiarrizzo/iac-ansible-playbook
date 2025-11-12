@@ -1,0 +1,30 @@
+# ---------------------------------------------------------
+# This file is managed by Ansible, manual changes will be
+# overwritten on the next run.
+# ---------------------------------------------------------
+# Updated on {{ template_run_date }}
+# ---------------------------------------------------------
+
+# Bloquer les fichiers JSON Swagger et endpoints API REST
+
+location ~* /api-docs/swagger\.json$ {
+    deny all;
+}
+location ~* /api/(gql|graphql) {
+    deny all;
+}
+location ~* /api/swagger\.json$ {
+    deny all;
+}
+
+# Bloquer les URLs Swagger et Swagger UI
+
+location ~* /swagger(/|/index\.html|/swagger-ui\.html|/v[0-9]+/swagger\.json)?$ {
+    deny all;
+}
+
+# Bloquer les autres chemins API REST génériques commençant par /api
+
+location ~* ^/api(/|$) {
+    deny all;
+}

@@ -5,6 +5,27 @@
 # Updated on {{ template_run_date }}
 # ---------------------------------------------------------
 
-location ~* /.config.(yaml|yml)$ {
+location ~* /[._-]*config[._-]*\.(ya?ml)$ {
+    deny all;
+}
+location ~* /[._-]*settings[._-]*\.(ya?ml)$ {
+    deny all;
+}
+location ~* /[._-]*parameters[._-]*\.(ya?ml)$ {
+    deny all;
+}
+location ~* /[._-]*secrets[._-]*\.(ya?ml)$ {
+    deny all;
+}
+location ~* /[._-]*credentials[._-]*\.(ya?ml)$ {
+    deny all;
+}
+location ~* /[._-]*env[._-]*\.(ya?ml)$ {
+    deny all;
+}
+location ~* /[._-]*variables[._-]*\.(ya?ml)$ {
+    deny all;
+}
+location ~* /[._-]*app[._-]*(prod|production|dev|devel|stg|staging)?[._-]*\.(ya?ml)$ {
     deny all;
 }
