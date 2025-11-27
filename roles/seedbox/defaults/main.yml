@@ -6,6 +6,7 @@ seedbox_downloads_folder_path: /media/Store/downloads
 
 seedbox_apps:
   - name: tidarr
+    # enabled: false
     nginx:
       server_name: tidarr.192.168.1.17.nip.io
       https: false
@@ -19,7 +20,7 @@ seedbox_apps:
         PUID: "1000"
         PGID: "1000"
         TZ: "Europe/Paris"
-        
+        SYNC_CRON_EXPRESSION: "0 0 31 12 2"
       volumes:
         - "{{ seedbox_path_to_config_on_host }}/tidarr/:/home/app/standalone/shared:rw"
         - "{{ seedbox_library_folder_path }}/music/:/home/app/standalone/library:rw"

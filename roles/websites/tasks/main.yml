@@ -19,7 +19,7 @@
     name: "Git pull for {{ item.url }}"
     minute: "*/1"
     user: bgiarrizzo
-    job: "cd /home/bgiarrizzo/code/Websites/{{ item.url }} && git pull --ff-only | grep -qv 'Déjà à jour.' && make build"
+    job: bash /home/bgiarrizzo/code/Scripts/git_pull_and_build.sh {{ item.url }}
   with_items: "{{ website_list }}"
 
 - name: Link website repo to Nginx root
@@ -62,24 +62,15 @@
     state: directory
   with_items: "{{ website_list }}"
 
-- name: Create or update cronjob for stats generation via goaccess (without crawlers)
+- name: Create or update cronjob for stats generation via goaccess
   ansible.builtin.cron:
     name: "Generate stats for {{ item.url }}"
     minute: "*/10"
     user: root
-    job: /bin/bash -c 'd=$(date +"%Y-%m"); mkdir -p /var/www/{{ item.url }}/stats/$d && grep -Ev "{{ goaccess_exclude_patterns | join("|") }}" /var/log/nginx/{{ item.url }}/access.log | goaccess - --unknowns-as-crawlers --ignore-crawlers --log-format=COMBINED --exclude-ip={{ goaccess_exclude_ips | join(",") }} -o /var/www/{{ item.url }}/stats/$d/index.html' >> /var/log/goaccess_cron.log
-  with_items: "{{ website_list }}"
-
-- name: Create or update cronjob for stats generation via goaccess (with crawlers)
-  ansible.builtin.cron:
-    name: "Generate stats with crawlers for {{ item.url }}"
-    minute: "*/10"
-    user: root
-    job: /bin/bash -c 'd=$(date +"%Y-%m"); mkdir -p /var/www/{{ item.url }}/stats/$d && grep -Ev "{{ goaccess_exclude_patterns | join("|") }}" /var/log/nginx/{{ item.url }}/access.log | goaccess - --log-format=COMBINED --exclude-ip={{ goaccess_exclude_ips | join(",") }} -o /var/www/{{ item.url }}/stats/$d/with-crawlers.html' >> /var/log/goaccess_cron.log
+    job: /bin/bash /home/bgiarrizzo/code/Scripts/regen_stats_from_logs.sh {{ item.url }} latest
   with_items: "{{ website_list }}"
 
 - name: Ensure Nginx config is OK
   ansible.builtin.command: nginx -t
   notify:
     - restart_nginx
-

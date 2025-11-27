@@ -21,6 +21,7 @@
     privileged: "{{ item.docker.privileged | default(omit) }}"
     recreate: "{{ item.docker.recreate | default(false) }}"
   with_items: "{{ seedbox_apps }}"
+  when: item.enabled | default(true)
 
 - name: Create Nginx Virtual Host for Seedbox Apps
   ansible.builtin.template:
@@ -29,7 +30,7 @@
     mode: '0644'
   notify: restart_nginx
   with_items: "{{ seedbox_apps }}"
-  when: (item.nginx is defined)
+  when: (item.nginx is defined) and (item.enabled | default(true))
 
 - name: Create Log Directory for Seedbox Apps
   ansible.builtin.file:
@@ -37,7 +38,7 @@
     state: directory
     mode: '0755'
   with_items: "{{ seedbox_apps }}"
-  when: (item.nginx is defined)
+  when: (item.nginx is defined) and (item.enabled | default(true))
 
 - name: Get Let's Encrypt certificates
   ansible.builtin.command: >
@@ -46,7 +47,7 @@
   with_items: "{{ seedbox_apps }}"
   notify:
     - restart_nginx
-  when: (item.nginx is defined and "nip.io" not in item.nginx.server_name)
+  when: (item.nginx is defined and "nip.io" not in item.nginx.server_name) and (item.enabled | default(true))
 
 - name: Test Nginx Configuration
   ansible.builtin.command: nginx -t

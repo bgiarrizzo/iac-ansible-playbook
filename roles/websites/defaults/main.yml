@@ -22,6 +22,7 @@ website_list:
 
 goaccess_exclude_ips:
   - 192.168.1.0-192.168.1.255
+  - 172.225.120.104
 
 goaccess_exclude_patterns:
   - "403"

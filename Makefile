@@ -42,5 +42,5 @@ install: install_uv ## Install dependencies
 setup: install venv ## Setup Ansible environment
 	ansible-galaxy install -r requirements.yml
 
-run: setup ## Run Ansible playbook
+run: setup venv ## Run Ansible playbook
 	ansible-playbook playbook.yml -i hosts.yml
