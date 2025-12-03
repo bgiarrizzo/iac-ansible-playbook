@@ -19,7 +19,7 @@
     name: "Git pull for {{ item.url }}"
     minute: "*/1"
     user: bgiarrizzo
-    job: bash /home/bgiarrizzo/code/Scripts/git_pull_and_build.sh {{ item.url }}
+    job: /bin/bash /home/bgiarrizzo/code/Scripts/bash/git_pull_and_build.sh {{ item.url }}
   with_items: "{{ website_list }}"
 
 - name: Link website repo to Nginx root
@@ -67,7 +67,7 @@
     name: "Generate stats for {{ item.url }}"
     minute: "*/10"
     user: root
-    job: /bin/bash /home/bgiarrizzo/code/Scripts/regen_stats_from_logs.sh {{ item.url }} latest
+    job: /bin/bash /home/bgiarrizzo/code/Scripts/bash/regen_stats_from_logs.sh {{ item.url }} latest
   with_items: "{{ website_list }}"
 
 - name: Ensure Nginx config is OK
