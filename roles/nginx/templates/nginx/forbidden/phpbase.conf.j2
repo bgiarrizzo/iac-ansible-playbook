@@ -3,7 +3,8 @@
 # overwritten on the next run.
 # ---------------------------------------------------------
 
-[Definition]
-failregex = ^<HOST> - - \[.*\] "(GET|POST|HEAD|OPTIONS) (?:/[^ "]+)*/\.git(?:/[^ "]+)* HTTP/.*"
+# Interdire l'accès aux fichiers php
 
-ignoreregex =
+location ~* \.php(\..*|.*)?$ {
+    deny all;
+}

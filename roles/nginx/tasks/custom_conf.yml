@@ -4,12 +4,11 @@
     path: /etc/nginx/custom.d
     state: directory
 
-- name: Install Custom Configurations
+- name: Install conf for forbiden files
   template:
     src: "{{ item }}"
-    dest: /etc/nginx/custom.d/{{ item | basename | regex_replace('.j2','') }}
-  loop: "{{ lookup('fileglob', 'templates/nginx/*.j2', wantlist=True) }}"
-  when: item | basename != 'vhost-default.conf.j2'
+    dest: /etc/nginx/custom.d/forbidden-{{ item | basename | regex_replace('.j2','') }}
+  loop: "{{ lookup('fileglob', 'templates/nginx/forbidden/*.j2', wantlist=True) }}"
   notify: restart_nginx
 
 - name: Remove default nginx vhost
@@ -19,7 +18,7 @@
     
 - name: Setup default nginx vhost
   template:
-    src: "templates/nginx/vhost-default.conf.j2"
+    src: "templates/nginx/vhost/vhost-default.conf.j2"
     dest: "/etc/nginx/sites-enabled/default"
 
 - name: Ensure Nginx config is OK

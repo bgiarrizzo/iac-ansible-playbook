@@ -2,11 +2,9 @@
 # This file is managed by Ansible, manual changes will be
 # overwritten on the next run.
 # ---------------------------------------------------------
-# Updated on {{ template_run_date }}
-# ---------------------------------------------------------
 
-# Interdire tout accès à xmlrpc quel que soit le chemin
+# Bloque tous les fichiers de config utilisés par les CI
 
-location ~* /xmlrpc.php$ {
+location ~* .gitlab-ci.yml$ {
     deny all;
 }

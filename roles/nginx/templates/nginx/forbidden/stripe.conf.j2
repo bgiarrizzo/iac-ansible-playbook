@@ -1,0 +1,26 @@
+# ---------------------------------------------------------
+# This file is managed by Ansible, manual changes will be
+# overwritten on the next run.
+# ---------------------------------------------------------
+
+# Bloque tous les fichiers de config utilisés par les CI
+
+location ~* \.(stripe|payment|billing|checkout)$ {
+    deny all;
+}
+
+location ~* \.(stripe|payment|billing|checkout).(json|js|yaml|yml)$ {
+    deny all;
+}
+
+location ~* \.(stripe|payment|billing|checkout)(-|_|.).*.(json|js|yaml|yml)$ {
+    deny all;
+}
+
+location ~* (stripe|payment|billing|checkout).(json|js|yaml|yml)$ {
+    deny all;
+}
+
+location ~* (stripe|payment|billing|checkout)(-|_|.).*.(json|js|yaml|yml)$ {
+    deny all;
+}

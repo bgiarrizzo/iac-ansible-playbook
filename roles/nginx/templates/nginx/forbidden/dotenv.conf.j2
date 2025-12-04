@@ -2,12 +2,11 @@
 # This file is managed by Ansible, manual changes will be
 # overwritten on the next run.
 # ---------------------------------------------------------
-# Updated on {{ template_run_date }}
-# ---------------------------------------------------------
 
 # Bloque tous les fichiers .env, avec éventuellement
 # des préfixes/suffixes contenant -, _, ou .
 
-location ~* /[._-]*env[._-]*$ {
+location ~* /(.|_|-)*env(.|_|-)*$ {
     deny all;
 }
+

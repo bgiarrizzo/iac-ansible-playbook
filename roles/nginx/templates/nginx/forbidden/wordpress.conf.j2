@@ -2,8 +2,6 @@
 # This file is managed by Ansible, manual changes will be
 # overwritten on the next run.
 # ---------------------------------------------------------
-# Updated on {{ template_run_date }}
-# ---------------------------------------------------------
 
 # Bloquer l'accès au fichier wp-config.php quel que soit le suffixe
 
@@ -26,5 +24,11 @@ location ~* /xmlrpc\.php$ {
 # Bloquer l'accès à wp-login.php sauf à certaines IP si besoin
 
 location ~* /wp-login\.php$ {
+    deny all;
+}
+
+# Bloquer les fichiers wlwmanifest.xml quel que soit le repertoire
+
+location ~* /wp-includes/wlwmanifest.xml$ {
     deny all;
 }

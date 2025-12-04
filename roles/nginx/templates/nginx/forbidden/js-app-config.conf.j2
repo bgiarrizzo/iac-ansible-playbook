@@ -2,11 +2,7 @@
 # This file is managed by Ansible, manual changes will be
 # overwritten on the next run.
 # ---------------------------------------------------------
-# Updated on {{ template_run_date }}
-# ---------------------------------------------------------
 
-# Interdire l'accès aux fichiers php
-
-location ~* \.php(\..*|.*)?$ {
+location ~* (config|conf)/(prod|production|stg|staging|dev|development).js$ {
     deny all;
 }

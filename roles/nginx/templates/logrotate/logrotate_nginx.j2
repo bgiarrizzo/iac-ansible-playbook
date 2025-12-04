@@ -2,13 +2,11 @@
 # This file is managed by Ansible, manual changes will be
 # overwritten on the next run.
 # ---------------------------------------------------------
-# Updated on {{ template_run_date }}
-# ---------------------------------------------------------
 
 /var/log/nginx/*.log {
 	monthly
 	missingok
-	rotate 12
+	rotate 120
 	compress
 	delaycompress
 	notifempty

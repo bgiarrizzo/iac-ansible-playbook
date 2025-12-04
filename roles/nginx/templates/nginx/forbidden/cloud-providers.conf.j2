@@ -1,0 +1,31 @@
+# ---------------------------------------------------------
+# This file is managed by Ansible, manual changes will be
+# overwritten on the next run.
+# ---------------------------------------------------------
+
+# Bloque les fichiers de config utilisés par les
+# différents cloud providers.
+
+location ~* (config)\.js$ {
+    deny all;
+}
+
+location ~* (aws-config|aws.config|aws-exports|amplify-config)\.js$ {
+    deny all;
+}
+
+location ~* (firebase-config|firebase-messaging-sw)\.js$ {
+    deny all;
+}
+
+location ~* (gcp-config\.js|gcp-credentials\.json)$ {
+    deny all;
+}
+
+location ~* (azure-config\.js|azure-settings\.json|appsettings\.json)$ {
+    deny all;
+}
+
+location ~* (config\.json|cloud-config\.js|cloud-config\.json)$ {
+    deny all;
+}

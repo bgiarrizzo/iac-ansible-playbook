@@ -28,6 +28,8 @@ newsreader_apps:
         name: wallabag/wallabag
         tag: latest
       restart: unless-stopped
+      environment:
+        SYMFONY__ENV__DOMAIN_NAME: https://wallabag.giarrizzo.fr
       volumes:
         - "{{ newsreaders_path_to_config_on_host }}/wallabag/images:/var/www/wallabag/web/assets/images:rw"
         - "{{ newsreaders_path_to_config_on_host }}/wallabag/data:/var/www/wallabag/data:rw"

@@ -3,7 +3,8 @@
 # overwritten on the next run.
 # ---------------------------------------------------------
 
-[Definition]
-failregex = ^<HOST> - - \[.*\] "(GET|POST|HEAD|OPTIONS) (?:/[^ "]+)*/\.git(?:/[^ "]+)* HTTP/.*"
+# Interdire tout accès à xmlrpc quel que soit le chemin
 
-ignoreregex =
+location ~* /xmlrpc.php$ {
+    deny all;
+}
