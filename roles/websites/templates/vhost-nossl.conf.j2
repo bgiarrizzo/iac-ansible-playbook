@@ -1,0 +1,27 @@
+# ---------------------------------------------------------
+# This file is managed by Ansible, manual changes will be
+# overwritten on the next run.
+# ---------------------------------------------------------
+
+server {
+    listen 80;
+    listen [::]:80;
+
+    server_name {{ item.item.url }} {% if item.item.url.split('.') | length == 2 %} www.{{ item.item.url }}{% endif %};
+
+    root /var/www/{{ item.item.url }};  
+    index index.html index.htm;  
+    disable_symlinks off;
+
+    # Fichiers de logs: 
+    error_log /var/log/nginx/{{ item.item.url }}/error.log; 
+    access_log /var/log/nginx/{{ item.item.url }}/access.log; 
+
+    location / { 
+        try_files $uri $uri/ =404; 
+    }
+
+    {% for forbidden_item in nginx_forbiden_list %}
+        include /etc/nginx/custom.d/forbidden-{{ forbidden_item }}.conf;
+    {% endfor %}
+}

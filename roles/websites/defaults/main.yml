@@ -19,6 +19,8 @@ website_list:
   - name: website-hackwithhyweene
     repo: git@github.com:bgiarrizzo/website-hackwithhyweene.git
     url: hack-with-hyweene.com
+  - name: stats.giarrizzo.fr
+    url: stats.giarrizzo.fr
 
 goaccess_exclude_ips:
   - 192.168.1.0-192.168.1.255

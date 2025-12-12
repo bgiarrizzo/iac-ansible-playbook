@@ -11,6 +11,7 @@
     repo: "{{ item.repo }}"
     dest: "/home/bgiarrizzo/code/Websites/{{ item.url }}"
   with_items: "{{ website_list }}"
+  when: item.repo is defined
   become: yes
   become_user: bgiarrizzo
 
@@ -21,6 +22,7 @@
     user: bgiarrizzo
     job: /bin/bash /home/bgiarrizzo/code/Scripts/bash/git_pull_and_build.sh {{ item.url }}
   with_items: "{{ website_list }}"
+  when: item.repo is defined
 
 - name: Link website repo to Nginx root
   ansible.builtin.file:
@@ -29,12 +31,20 @@
     state: link
     force: yes
   with_items: "{{ website_list }}"
+  when: item.repo is defined
 
-- name: Create Nginx Config for Websites
-  ansible.builtin.template:
-    src: "vhost.conf.j2"
-    dest: "/etc/nginx/sites-enabled/{{ item.url }}"
+- name: Check vhosts files exists
+  stat:
+    path: "/etc/nginx/sites-enabled/{{ item.url }}"
   with_items: "{{ website_list }}"
+  register: vhost_file_exists
+
+- name: Create vhost files
+  ansible.builtin.template:
+    src: "vhost-nossl.conf.j2"
+    dest: "/etc/nginx/sites-enabled/{{ item.item.url }}"
+  loop: "{{ vhost_file_exists.results }}"
+  when: not item.stat.exists
   notify:
     - restart_nginx
 
@@ -44,6 +54,17 @@
     state: directory
     mode: '0755'
   with_items: "{{ website_list }}"
+
+- name: Ensure Nginx config is OK
+  ansible.builtin.command: nginx -t
+  notify:
+    - restart_nginx
+
+- name: Force Restart Nginx
+  ansible.builtin.systemd:
+    name: nginx
+    state: restarted
+    enabled: yes
 
 - name: Get Let's Encrypt certificates
   ansible.builtin.command: >
@@ -56,9 +77,22 @@
   notify:
     - restart_nginx
 
+- name: Update vhost files to ssl if needed
+  ansible.builtin.template:
+    src: "vhost.conf.j2"
+    dest: "/etc/nginx/sites-enabled/{{ item.url }}"
+  with_items: "{{ website_list }}"
+  notify:
+    - restart_nginx
+
+- name: Ensure Nginx config is OK
+  ansible.builtin.command: nginx -t
+  notify:
+    - restart_nginx
+
 - name: Ensure stats folder exists
   ansible.builtin.file:
-    path: "/var/www/{{ item.url }}/stats/"
+    path: "/var/www/stats.giarrizzo.fr/{{ item.url }}/"
     state: directory
   with_items: "{{ website_list }}"
 
@@ -67,10 +101,5 @@
     name: "Generate stats for {{ item.url }}"
     minute: "*/10"
     user: root
-    job: /bin/bash /home/bgiarrizzo/code/Scripts/bash/regen_stats_from_logs.sh {{ item.url }} latest
+    job: /bin/bash /home/bgiarrizzo/code/Scripts/bash/build_stats_from_logs.sh {{ item.url }} latest
   with_items: "{{ website_list }}"
-
-- name: Ensure Nginx config is OK
-  ansible.builtin.command: nginx -t
-  notify:
-    - restart_nginx
