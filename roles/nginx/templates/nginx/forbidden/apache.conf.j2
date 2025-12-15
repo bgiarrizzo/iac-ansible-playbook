@@ -3,12 +3,12 @@
 # overwritten on the next run.
 # ---------------------------------------------------------
 
-# Interdire l'accès aux fichiers php
+# Bloque tous les accès apache malveillants.
 
-location ~* \.php(\..*|.*)?$ {
+location ~* (/modules/) {
     deny all;
 }
 
-location ~* (/php/) {
+location ~* (/modules/mod_simplefileuploadv1.3/elements/) {
     deny all;
 }

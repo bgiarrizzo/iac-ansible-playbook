@@ -6,3 +6,11 @@
 location ~* (config|conf)/(prod|production|stg|staging|dev|development).js$ {
     deny all;
 }
+
+location ~* (/_next/static/chunks/config|/_next/static/chunks/conf)/(prod|production|stg|staging|dev|development).js$ {
+    deny all;
+}
+
+location ~* (/_next/data)/(prod|production|stg|staging|dev|development)/.*\.json$ {
+    deny all;
+}

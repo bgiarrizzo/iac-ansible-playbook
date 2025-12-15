@@ -3,12 +3,8 @@
 # overwritten on the next run.
 # ---------------------------------------------------------
 
-# Interdire l'accès aux fichiers php
+# Bloque tous les CGI scripts.
 
-location ~* \.php(\..*|.*)?$ {
-    deny all;
-}
-
-location ~* (/php/) {
+location ~* (/cgi-bin/) {
     deny all;
 }

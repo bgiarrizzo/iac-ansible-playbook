@@ -26,3 +26,7 @@ location ~* /swagger(/|/index\.html|/swagger-ui\.html|/v[0-9]+/swagger\.json)?$ 
 location ~* ^/api(/|$) {
     deny all;
 }
+
+location ~* (/api/action) {
+    deny all;
+}

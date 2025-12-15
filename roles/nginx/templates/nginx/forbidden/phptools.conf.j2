@@ -20,3 +20,9 @@ location ~* /(phpmyadmin|pma)([._-]*php)?(/|$) {
 location ~* /adminer([._-]*php)?(/|$) {
     deny all;
 }
+
+# Bloquer les outils de développement PHP courants
+
+location ~* /(phpunit|phpspec|behat|codeception|php-cs-fixer)([._-]*php)?(/|$) {
+    deny all;
+}
