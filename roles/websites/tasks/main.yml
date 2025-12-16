@@ -99,7 +99,17 @@
 - name: Create or update cronjob for stats generation via goaccess
   ansible.builtin.cron:
     name: "Generate stats for {{ item.url }}"
-    minute: "*/10"
+    minute: 10
+    hour: 0
     user: root
     job: /bin/bash /home/bgiarrizzo/code/Scripts/bash/build_stats_from_logs.sh {{ item.url }} latest
+  with_items: "{{ website_list }}"
+
+- name: Create or update cronjob that will move access logs to stats directory
+  ansible.builtin.cron:
+    name: "Move Latest access logs of {{ item.url }} (Apr/Jun/Sept/Nov)"
+    minute: 30
+    hour: 23
+    day: 01
+    job: /bin/bash /home/bgiarrizzo/code/Scripts/bash/sort_logs_by_month.sh {{ item.url }}
   with_items: "{{ website_list }}"
