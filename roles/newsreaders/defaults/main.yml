@@ -18,7 +18,6 @@ newsreader_apps:
         - "{{ newsreaders_path_to_config_on_host }}/freshrss/:/config:rw"
       ports:
         - "8555:80"
-      recreate: true
   - name: wallabag
     nginx:
       server_name: wallabag.giarrizzo.fr
@@ -35,4 +34,3 @@ newsreader_apps:
         - "{{ newsreaders_path_to_config_on_host }}/wallabag/data:/var/www/wallabag/data:rw"
       ports:
         - "8081:80"
-      recreate: true

@@ -27,4 +27,3 @@ mediacenter_apps:
         - "{{ mediacenter_library_folder_path }}/books/:/books:rw"
       ports:
         - "8096:8096"
-      recreate: true

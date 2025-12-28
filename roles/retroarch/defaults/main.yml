@@ -19,4 +19,3 @@ retroarch_apps:
         - "{{ retroarch_path_to_config_on_host }}/storage/:/var/lib/dav:rw"
       ports:
         - "8082:80"
-      recreate: "{{ item.docker.recreate | default(true) }}"

@@ -26,7 +26,6 @@ seedbox_apps:
         - "{{ seedbox_library_folder_path }}/music/:/home/app/standalone/library:rw"
       ports:
         - "8484:8484"
-      recreate: true
   - name: sonarr
     nginx:
       server_name: sonarr.giarrizzo.fr
@@ -49,7 +48,6 @@ seedbox_apps:
         - "{{ seedbox_library_folder_path }}/tv/:/tv:rw"
       ports:
         - "8989:8989"
-      recreate: true
   - name: radarr
     nginx:
       server_name: radarr.giarrizzo.fr
@@ -72,7 +70,6 @@ seedbox_apps:
         - "{{ seedbox_library_folder_path }}/movies/:/movies:rw"
       ports:
         - "7878:7878"
-      recreate: true
   - name: lidarr
     nginx:
       server_name: lidarr.giarrizzo.fr
@@ -95,7 +92,6 @@ seedbox_apps:
         - "{{ seedbox_library_folder_path }}/music/:/music:rw"
       ports:
         - "8686:8686"
-      recreate: true
   - name: bazarr
     nginx:
       server_name: bazarr.giarrizzo.fr
@@ -119,7 +115,6 @@ seedbox_apps:
         - "{{ seedbox_library_folder_path }}/tv/:/tv:rw"
       ports:
         - "6767:6767"
-      recreate: true
   - name: prowlarr
     nginx:
       server_name: prowlarr.giarrizzo.fr
@@ -141,7 +136,6 @@ seedbox_apps:
         - "{{ seedbox_path_to_config_on_host }}/prowlarr/:/config:rw"
       ports:
         - "9696:9696"
-      recreate: true
   - name: wireguard
     docker:
       image:
@@ -161,7 +155,6 @@ seedbox_apps:
         LOG_CONFS: "true"
       ports:
         - "9091:9091"
-      recreate: true
       restart: unless-stopped
   - name: transmission
     nginx:
@@ -184,7 +177,6 @@ seedbox_apps:
         TZ: "Europe/Paris"
         DOCKER_MODS: "jordanpotter/docker-mods:transmission-nat-pmp"
       restart: unless-stopped
-      recreate: true
   - name: flaresolverr
     nginx:
       server_name: flaresolverr.192.168.1.17.nip.io
@@ -202,4 +194,3 @@ seedbox_apps:
       restart: unless-stopped
       ports:
         - "8191:8191"
-      recreate: true
