@@ -1,0 +1,20 @@
+---
+
+minecraft_path_to_config_on_host: /media/Store/apps/minecraft
+
+minecraft_apps:
+  - name: minecraft
+    docker:
+      image:
+        name: "itzg/minecraft-bedrock-server"
+        tag: "latest"
+      restart: unless-stopped
+      volumes:
+        - "{{ minecraft_path_to_config_on_host }}/data/:/data"
+      environment:
+        SERVER_NAME: "Giarrizzo Land"
+        EULA: "True"
+        GAMEMODE: "creative"
+        ALLOW_FLIGHT: "True"
+      ports:
+        - "19132:19132/udp"
