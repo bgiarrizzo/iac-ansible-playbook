@@ -1,5 +1,4 @@
 ---
-
 - name: Ensure Repo Folder Exists
   ansible.builtin.file:
     path: "/home/bgiarrizzo/code/Websites/{{ item.url }}"
@@ -23,6 +22,12 @@
     job: /bin/bash /home/bgiarrizzo/code/Scripts/bash/git_pull_and_build.sh {{ item.url }}
   with_items: "{{ website_list }}"
   when: item.repo is defined
+
+- name: Build Website
+  ansible.builtin.command: make build
+  args:
+    chdir: "/home/bgiarrizzo/code/Websites/{{ item.url }}"
+  with_items: "{{ website_list }}"
 
 - name: Link website repo to Nginx root
   ansible.builtin.file:
@@ -52,7 +57,7 @@
   ansible.builtin.file:
     path: "/var/log/nginx/{{ item.url }}"
     state: directory
-    mode: '0755'
+    mode: "0755"
   with_items: "{{ website_list }}"
 
 - name: Ensure Nginx config is OK
@@ -107,7 +112,7 @@
 
 - name: Create or update cronjob that will move access logs to stats directory
   ansible.builtin.cron:
-    name: "Move Latest access logs of {{ item.url }} (Apr/Jun/Sept/Nov)"
+    name: "Move Latest access logs of {{ item.url }}"
     minute: 30
     hour: 23
     day: 01

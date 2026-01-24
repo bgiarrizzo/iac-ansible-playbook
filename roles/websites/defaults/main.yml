@@ -16,9 +16,9 @@ website_list:
   - name: website-giarrizzo-family
     repo: git@github.com:bgiarrizzo/website-giarrizzo-family.git
     url: giarrizzo.fr
-  - name: website-hackwithhyweene
+  - name: website-hyweene
     repo: git@github.com:bgiarrizzo/website-hackwithhyweene.git
-    url: hack-with-hyweene.com
+    url: hyweene.fr
   - name: stats.giarrizzo.fr
     url: stats.giarrizzo.fr
 
