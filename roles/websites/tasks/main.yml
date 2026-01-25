@@ -28,6 +28,7 @@
   args:
     chdir: "/home/bgiarrizzo/code/Websites/{{ item.url }}"
   with_items: "{{ website_list }}"
+  when: item.repo is defined
 
 - name: Link website repo to Nginx root
   ansible.builtin.file:

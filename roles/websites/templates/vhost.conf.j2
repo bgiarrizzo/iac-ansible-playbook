@@ -9,7 +9,7 @@ server {
 
     server_name {{ item.url }} {% if item.url.split('.') | length == 2 %} www.{{ item.url }}{% endif %};
 
-    return 301 https://{{ item.url }}$request_uri;
+    return 301 https://{% if item.url.split('.') | length == 2 %}www.{{ item.url }}{% else %}{{ item.url }}{% endif %}$request_uri;
 }
 
 server {
