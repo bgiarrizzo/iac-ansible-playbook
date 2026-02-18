@@ -6,7 +6,10 @@
 # Bloque tous les fichiers .env, avec éventuellement
 # des préfixes/suffixes contenant -, _, ou .
 
-location ~* /(.|_|-)*env(.|_|-)*$ {
+location ~* /\.env {
     deny all;
 }
 
+location ~* /(^|\.)env($|\.) {
+    deny all;
+}
