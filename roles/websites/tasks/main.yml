@@ -34,7 +34,7 @@
 
 - name: Link website repo to Nginx root
   ansible.builtin.file:
-    src: "/home/bgiarrizzo/code/Websites/{{ item.url }}/build/"
+    src: "/home/bgiarrizzo/code/Websites/{{ item.url }}/current/"
     dest: "/var/www/{{ item.url }}"
     state: link
     force: yes
