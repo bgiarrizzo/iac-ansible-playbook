@@ -111,7 +111,7 @@ server {
     {% set csp_host = 'www.' + item.url if is_root_domain else item.url %}
 
     # Content Security Policy
-    add_header Content-Security-Policy " default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' https://{{ csp_host }} data:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests; " always;
+    add_header Content-Security-Policy " default-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' https://{{ csp_host }} data:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; upgrade-insecure-requests; " always;
 
     # X-Content-Type-Options
     add_header X-Content-Type-Options nosniff;
@@ -121,6 +121,11 @@ server {
 
     # Permissions-Policy
     add_header Permissions-Policy "geolocation=(), microphone=(), camera=()" always;
+
+    # Cross-Origin-{Resource/Opener/Embedder}-Policy
+    add_header Cross-Origin-Resource-Policy "same-origin" always;
+    add_header Cross-Origin-Opener-Policy "same-origin" always;
+    add_header Cross-Origin-Embedder-Policy "require-corp" always;
 
     # LetsEncrypt Config
     include /etc/letsencrypt/options-ssl-nginx.conf;
