@@ -3,6 +3,7 @@
   roles:
     - security
     - fail2ban
+    - geerlingguy.nginx
     - nginx
     - geerlingguy.docker
     - irc
