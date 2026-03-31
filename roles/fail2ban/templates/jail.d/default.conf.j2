@@ -6,4 +6,5 @@
 [DEFAULT]
 banaction           = iptables-multiport
 banaction_allports  = iptables-allports
-action              = irc_notifications
+action              = %(banaction)s
+                      irc_notifications

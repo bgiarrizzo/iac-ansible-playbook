@@ -103,6 +103,7 @@
     path: "/var/www/stats.giarrizzo.fr/{{ item.url }}/"
     state: directory
   with_items: "{{ website_list }}"
+  when: item.url != "stats.giarrizzo.fr"
 
 - name: Create or update cronjob for stats generation via goaccess
   ansible.builtin.cron:
@@ -121,3 +122,4 @@
     user: bgiarrizzo
     job: /bin/bash -c "cd /home/bgiarrizzo/code/Scripts/bash && bash sort_logs_by_month.sh {{ item.url }}"
   with_items: "{{ website_list }}"
+  when: item.url != "stats.giarrizzo.fr"
