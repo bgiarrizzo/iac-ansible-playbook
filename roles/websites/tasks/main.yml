@@ -17,9 +17,9 @@
 - name: Set Crontab that will pull latest changes every minute
   ansible.builtin.cron:
     name: "Git pull for {{ item.url }}"
-    minute: "*/1"
+    minute: 14
     user: bgiarrizzo
-    job: /bin/bash /home/bgiarrizzo/code/Scripts/bash/git_pull_and_build.sh {{ item.url }}
+    job: /bin/bash /home/bgiarrizzo/code/Scripts/bash/git_pull_and_build.sh {{ item.url }} > /home/bgiarrizzo/code/Websites/{{ item.url }}/git_pull_build.log 2>&1
   with_items: "{{ website_list }}"
   when: item.repo is defined
 
@@ -111,15 +111,14 @@
     minute: 10
     hour: 0
     user: bgiarrizzo
-    job: /bin/bash -c "cd /home/bgiarrizzo/code/Scripts/python/build_stats && source .venv/bin/activate && make build WEBSITE=all SCOPE=latest"
+    job: /bin/bash -c "cd /home/bgiarrizzo/code/Scripts/python/build_stats && source .venv/bin/activate && make build WEBSITE=all SCOPE=latest" > /var/www/stats.giarrizzo.fr/generate_stats.log 2>&1
 
 - name: Create or update cronjob that will move access logs to stats directory
   ansible.builtin.cron:
     name: "Move Latest access logs of {{ item.url }}"
     minute: 30
     hour: 23
-    day: 01
     user: bgiarrizzo
-    job: /bin/bash -c "cd /home/bgiarrizzo/code/Scripts/bash && bash sort_logs_by_month.sh {{ item.url }}"
+    job: /bin/bash -c "cd /home/bgiarrizzo/code/Scripts/bash && bash sort_logs_by_month.sh {{ item.url }}" > /home/bgiarrizzo/code/Websites/{{ item.url }}/move_logs.log 2>&1
   with_items: "{{ website_list }}"
   when: item.url != "stats.giarrizzo.fr"
