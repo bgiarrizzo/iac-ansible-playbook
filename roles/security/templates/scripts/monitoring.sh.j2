@@ -1,0 +1,127 @@
+{% raw %}
+#!/usr/bin/env bash
+
+source /home/bgiarrizzo/.passwords
+
+set -euo pipefail
+
+function send_alert {
+    local message="$1"
+
+    local user=${FREEMOBILE_API_USER}
+    local pass=${FREEMOBILE_API_PASS}
+
+    curl --get \
+        --data-urlencode "user=${user}" \
+        --data-urlencode "pass=${pass}" \
+        --data-urlencode "msg=${message}" \
+        "https://smsapi.free-mobile.fr/sendmsg" || true
+}
+
+METRIC="${1:-}"
+
+MESSAGE=""
+
+case "$METRIC" in
+    ip)
+        DOMAINS=("giarrizzo.fr" "hyweene.fr")
+
+        # Get current public IP
+        current_public_ip=$(curl -s https://api.ipify.org)
+
+        # For each domain, check DNS A record against current public IP
+        for domain in "${DOMAINS[@]}"; do
+            domain_ip=$(dig +short "$domain" A | head -n 1)
+            if [[ "$domain_ip" != "$current_public_ip" ]]; then
+                send_alert "CRITICAL: IP mismatch for ${domain} (DNS: ${domain_ip}, current: ${current_public_ip})"
+            fi
+        done
+        ;;
+    load)
+        load_avg=$(awk '{print $1}' /proc/loadavg)
+        cpu_count=$(nproc)
+        load_pct=$(echo "scale=2; $load_avg / $cpu_count * 100" | bc)
+
+        if (( $(echo "$load_pct >= 90" | bc -l) )); then
+            send_alert "CRITICAL: Load average is at ${load_pct}% of CPU capacity"
+        elif (( $(echo "$load_pct >= 80" | bc -l) )); then
+            send_alert "WARNING: Load average is at ${load_pct}% of CPU capacity"
+        fi
+        ;;
+    cpu)
+        # Sample CPU over 1 second via vmstat (idle % is column 15 on the data line)
+        cpu_idle=$(vmstat 1 2 | awk 'NR==4{print $15}')
+        cpu_used=$(( 100 - cpu_idle ))
+
+        if (( cpu_used >= 90 )); then
+            MESSAGE="CRITICAL: CPU usage is at ${cpu_used}%"
+        elif (( cpu_used >= 80 )); then
+            MESSAGE="WARNING: CPU usage is at ${cpu_used}%"
+        fi
+
+        send_alert "$MESSAGE"
+        ;;
+    ram)
+        ram_info=$(free | awk '/^Mem:/{print $2, $3}')
+        ram_total=$(echo "$ram_info" | awk '{print $1}')
+        ram_used=$(echo "$ram_info" | awk '{print $2}')
+        ram_pct=$(( ram_used * 100 / ram_total ))
+
+        if (( ram_pct >= 90 )); then
+            MESSAGE="CRITICAL: RAM usage is at ${ram_pct}%"
+        elif (( ram_pct >= 80 )); then
+            MESSAGE="WARNING: RAM usage is at ${ram_pct}%"
+        fi
+
+        send_alert "$MESSAGE"
+        ;;
+    disk)
+        DISK_ALERTS=()
+
+        while IFS= read -r line; do
+            # Extract use percentage (strip trailing %) and mount point
+            use_pct=$(echo "$line" | awk '{print $5}' | tr -d '%')
+            mount=$(echo "$line" | awk '{print $6}')
+
+            if (( use_pct >= 90 )); then
+                send_alert "CRITICAL: partition ${mount} is at ${use_pct}% capacity"
+            elif (( use_pct >= 80 )); then
+                send_alert "WARNING: partition ${mount} is at ${use_pct}% capacity"
+            fi
+        done < <(df -h --output=source,size,used,avail,pcent,target -x tmpfs -x devtmpfs -x squashfs | tail -n +2 | grep -v docker)
+        ;;
+    certs)
+        WARNING_THRESHOLD=14
+        CRITICAL_THRESHOLD=7
+
+        DOMAINS=(
+            "giarrizzo.fr" "www.giarrizzo.fr" 
+            "jessica.giarrizzo.fr" "lyanna.giarrizzo.fr" "bruno.giarrizzo.fr" 
+            "lidar.giarrizzo.fr" "radarr.giarrizzo.fr" "sonarr.giarrizzo.fr" "bazarr.giarrizzo.fr" "prowlarr.giarrizzo.fr"
+            "hyweene.fr" "www.hyweene.fr"
+        )
+
+        for domain in "${DOMAINS[@]}"; do
+            expiry_date=$(openssl s_client -servername "$domain" -connect "$domain:443" </dev/null 2>/dev/null | openssl x509 -noout -enddate 2>/dev/null | cut -d= -f2)
+            if [[ -z "$expiry_date" ]]; then
+                send_alert "CRITICAL: Unable to retrieve certificate for ${domain}"
+                continue
+            fi
+
+            expiry_seconds=$(date -d "$expiry_date" +%s)
+            now_seconds=$(date +%s)
+            days_left=$(( (expiry_seconds - now_seconds) / 86400 ))
+
+            if (( days_left <= CRITICAL_THRESHOLD )); then
+                send_alert "CRITICAL: Certificate for ${domain} expires in ${days_left} days"
+            elif (( days_left <= WARNING_THRESHOLD )); then
+                send_alert "WARNING: Certificate for ${domain} expires in ${days_left} days"
+            fi
+        done
+        ;;
+    *)
+        echo "Usage: $0 {cpu|ram|disk|load|ip|certs}" >&2
+        exit 1
+        ;;
+esac
+{% endraw %}

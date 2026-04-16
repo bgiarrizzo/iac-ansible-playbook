@@ -2,3 +2,5 @@
 - include_tasks: ssh.yml
 
 - include_tasks: apt.yml
+
+- include_tasks: monitoring.yml

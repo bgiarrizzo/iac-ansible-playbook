@@ -1,0 +1,59 @@
+---
+- name: Ensure /usr/local/scripts directory exists.
+  file:
+    path: /usr/local/scripts
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Copy monitoring script.
+  template:
+    src: templates/scripts/monitoring.sh.j2
+    dest: /usr/local/scripts/monitoring.sh
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Schedule monitoring crontab - ip (every hour at 10 minutes past).
+  cron:
+    name: "monitoring ip"
+    minute: "10"
+    job: "/usr/local/scripts/monitoring.sh ip > /dev/null 2>&1"
+    user: root
+
+- name: Schedule monitoring crontab - load (every minute).
+  cron:
+    name: "monitoring load"
+    minute: "*"
+    job: "/usr/local/scripts/monitoring.sh load > /dev/null 2>&1"
+    user: root
+
+- name: Schedule monitoring crontab - cpu (every minute).
+  cron:
+    name: "monitoring cpu"
+    minute: "*"
+    job: "/usr/local/scripts/monitoring.sh cpu > /dev/null 2>&1"
+    user: root
+
+- name: Schedule monitoring crontab - ram (every minute).
+  cron:
+    name: "monitoring ram"
+    minute: "*"
+    job: "/usr/local/scripts/monitoring.sh ram > /dev/null 2>&1"
+    user: root
+
+- name: Schedule monitoring crontab - disk (every hour at 0 minutes past).
+  cron:
+    name: "monitoring disk"
+    minute: "0"
+    job: "/usr/local/scripts/monitoring.sh disk > /dev/null 2>&1"
+    user: root
+
+- name: Schedule monitoring crontab - certs (every day at 10:30).
+  cron:
+    name: "monitoring certs"
+    minute: "30"
+    hour: "10"
+    job: "/usr/local/scripts/monitoring.sh certs > /dev/null 2>&1"
+    user: root
