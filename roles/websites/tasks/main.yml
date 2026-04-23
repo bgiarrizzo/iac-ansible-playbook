@@ -3,13 +3,13 @@
   ansible.builtin.file:
     path: "/home/bgiarrizzo/code/Websites/{{ item.url }}"
     state: directory
-  with_items: "{{ website_list }}"
+  loop: "{{ website_list }}"
 
 - name: Clone website repositories
   ansible.builtin.git:
     repo: "{{ item.repo }}"
     dest: "/home/bgiarrizzo/code/Websites/{{ item.url }}"
-  with_items: "{{ website_list }}"
+  loop: "{{ website_list }}"
   when: item.repo is defined
   become: yes
   become_user: bgiarrizzo
@@ -20,14 +20,14 @@
     minute: 14
     user: bgiarrizzo
     job: /bin/bash /home/bgiarrizzo/code/Scripts/bash/git_pull_and_build.sh {{ item.url }} > /home/bgiarrizzo/code/Websites/{{ item.url }}/git_pull_build.log 2>&1
-  with_items: "{{ website_list }}"
+  loop: "{{ website_list }}"
   when: item.repo is defined
 
 - name: Build Website
   ansible.builtin.command: make build
   args:
     chdir: "/home/bgiarrizzo/code/Websites/{{ item.url }}"
-  with_items: "{{ website_list }}"
+  loop: "{{ website_list }}"
   when: item.repo is defined
   become: yes
   become_user: bgiarrizzo
@@ -38,13 +38,13 @@
     dest: "/var/www/{{ item.url }}"
     state: link
     force: yes
-  with_items: "{{ website_list }}"
+  loop: "{{ website_list }}"
   when: item.repo is defined
 
 - name: Check vhosts files exists
   stat:
     path: "/etc/nginx/sites-enabled/{{ item.url }}"
-  with_items: "{{ website_list }}"
+  loop: "{{ website_list }}"
   register: vhost_file_exists
 
 - name: Create vhost files
@@ -61,7 +61,7 @@
     path: "/var/log/nginx/{{ item.url }}"
     state: directory
     mode: "0755"
-  with_items: "{{ website_list }}"
+  loop: "{{ website_list }}"
 
 - name: Ensure Nginx config is OK
   ansible.builtin.command: nginx -t
@@ -81,7 +81,7 @@
       -d www.{{ item.url }}
     {% endif %}
     --non-interactive --agree-tos --email {{ certbot_email }}
-  with_items: "{{ website_list }}"
+  loop: "{{ website_list }}"
   notify:
     - restart_nginx
 
@@ -89,7 +89,7 @@
   ansible.builtin.template:
     src: "vhost.conf.j2"
     dest: "/etc/nginx/sites-enabled/{{ item.url }}"
-  with_items: "{{ website_list }}"
+  loop: "{{ website_list }}"
   notify:
     - restart_nginx
 
@@ -102,7 +102,7 @@
   ansible.builtin.file:
     path: "/var/www/stats.giarrizzo.fr/{{ item.url }}/"
     state: directory
-  with_items: "{{ website_list }}"
+  loop: "{{ website_list }}"
   when: item.url != "stats.giarrizzo.fr"
 
 - name: Create or update cronjob for stats generation via goaccess
@@ -116,9 +116,13 @@
 - name: Create or update cronjob that will move access logs to stats directory
   ansible.builtin.cron:
     name: "Move Latest access logs of {{ item.url }}"
-    minute: 30
+    minute: "{{ website_index * 10 }}"
     hour: 23
     user: bgiarrizzo
-    job: /bin/bash -c "cd /home/bgiarrizzo/code/Scripts/bash && bash sort_logs_by_month.sh {{ item.url }}" > /home/bgiarrizzo/code/Websites/{{ item.url }}/move_logs.log 2>&1
-  with_items: "{{ website_list }}"
+    job: /bin/bash -c "cd /home/bgiarrizzo/code/Scripts/bash && bash
+      sort_logs_by_month.sh {{ item.url }}" > /home/bgiarrizzo/code/Websites/{{
+      item.url }}/move_logs.log 2>&1
+  loop: "{{ website_list }}"
+  loop_control:
+    index_var: website_index
   when: item.url != "stats.giarrizzo.fr"

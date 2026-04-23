@@ -5,7 +5,7 @@
     name: "{{ item.docker.image.name }}"
     tag: "{{ item.docker.image.tag }}"
     source: pull
-  with_items: "{{ irc_list }}"
+  loop: "{{ irc_list }}"
 
 - name: Run Containers
   ansible.builtin.docker_container:
@@ -17,4 +17,4 @@
     restart_policy: "{{ item.docker.restart | default(omit) }}"
     state: started
     recreate: "{{ item.docker.recreate | default(omit) }}"
-  with_items: "{{ irc_list }}"
+  loop: "{{ irc_list }}"

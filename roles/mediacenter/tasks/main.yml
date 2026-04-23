@@ -5,7 +5,7 @@
     name: "{{ item.docker.image.name }}"
     tag: "{{ item.docker.image.tag | default('latest') }}"
     pull: always
-  with_items: "{{ mediacenter_apps }}"
+  loop: "{{ mediacenter_apps }}"
 
 - name: Docker Run Containers
   community.docker.docker_container:
@@ -17,7 +17,7 @@
     volumes: "{{ item.docker.volumes | default(omit) }}"
     ports: "{{ item.docker.ports | default(omit) }}"
     recreate: "{{ item.docker.recreate | default(false) }}"
-  with_items: "{{ mediacenter_apps }}"
+  loop: "{{ mediacenter_apps }}"
 
 - name: Create Nginx Virtual Host for Media Center Apps
   ansible.builtin.template:
@@ -25,13 +25,13 @@
     dest: "/etc/nginx/sites-enabled/{{ item.nginx.server_name }}"
     mode: '0644'
   notify: restart_nginx
-  with_items: "{{ mediacenter_apps }}"
+  loop: "{{ mediacenter_apps }}"
 
 - name: Get Let's Encrypt certificates
   ansible.builtin.command: >
     certbot certonly --nginx -d {{ item.nginx.server_name }}
     --non-interactive --agree-tos --email {{ certbot_email }}
-  with_items: "{{ mediacenter_apps }}"
+  loop: "{{ mediacenter_apps }}"
   notify: restart_nginx
 
 - name: Test Nginx Configuration

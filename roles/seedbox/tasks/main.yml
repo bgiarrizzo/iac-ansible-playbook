@@ -5,7 +5,7 @@
     name: "{{ item.docker.image.name }}"
     tag: "{{ item.docker.image.tag | default('latest') }}"
     pull: always
-  with_items: "{{ seedbox_apps }}"
+  loop: "{{ seedbox_apps }}"
 
 - name: Docker Run Containers
   community.docker.docker_container:
@@ -20,7 +20,7 @@
     capabilities: "{{ item.docker.cap_add | default(omit) }}"
     privileged: "{{ item.docker.privileged | default(omit) }}"
     recreate: "{{ item.docker.recreate | default(false) }}"
-  with_items: "{{ seedbox_apps }}"
+  loop: "{{ seedbox_apps }}"
   when: item.enabled | default(true)
 
 - name: Create Nginx Virtual Host for Seedbox Apps
@@ -29,7 +29,7 @@
     dest: "/etc/nginx/sites-enabled/{{ item.nginx.server_name }}"
     mode: '0644'
   notify: restart_nginx
-  with_items: "{{ seedbox_apps }}"
+  loop: "{{ seedbox_apps }}"
   when: (item.nginx is defined) and (item.enabled | default(true))
 
 - name: Create Log Directory for Seedbox Apps
@@ -37,14 +37,14 @@
     path: "/var/log/nginx/{{ item.nginx.server_name }}"
     state: directory
     mode: '0755'
-  with_items: "{{ seedbox_apps }}"
+  loop: "{{ seedbox_apps }}"
   when: (item.nginx is defined) and (item.enabled | default(true))
 
 - name: Get Let's Encrypt certificates
   ansible.builtin.command: >
     certbot certonly --nginx -d {{ item.nginx.server_name }}
     --non-interactive --agree-tos --email {{ certbot_email }}
-  with_items: "{{ seedbox_apps }}"
+  loop: "{{ seedbox_apps }}"
   notify:
     - restart_nginx
   when: (item.nginx is defined and "nip.io" not in item.nginx.server_name) and (item.enabled | default(true))

@@ -36,11 +36,19 @@ venv: create_venv ## Load virtual environment
 
 
 install: install_uv ## Install dependencies
-	$(PACKAGER) sync
+	@if [ ! -f "$(VENV_FOLDER)/.uv_synced" ] || [ pyproject.toml -nt "$(VENV_FOLDER)/.uv_synced" ]; then \
+		$(PACKAGER) sync && touch $(VENV_FOLDER)/.uv_synced; \
+	else \
+		echo "Dependencies up to date, skipping uv sync."; \
+	fi
 
 
 setup: install venv ## Setup Ansible environment
-	ansible-galaxy install -r requirements.yml
+	@if [ ! -f ".galaxy_installed" ] || [ requirements.yml -nt ".galaxy_installed" ]; then \
+		ansible-galaxy install -r requirements.yml && touch .galaxy_installed; \
+	else \
+		echo "Galaxy roles up to date, skipping install."; \
+	fi
 
 run: setup venv ## Run Ansible playbook
-	ansible-playbook playbook.yml -i hosts.yml
+	ansible-playbook playbook.yml -i hosts.yml --diff

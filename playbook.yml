@@ -2,16 +2,16 @@
   remote_user: bgiarrizzo
   roles:
     - security
-    # - fail2ban
-    # - geerlingguy.nginx
-    # - nginx
-    # - geerlingguy.docker
-    # - irc
-    # - webhooks
-    # - seedbox
-    # - websites
-    # - glance
-    # - mediacenter
-    # - newsreaders
-    # - retroarch
-    # - minecraft
+    - fail2ban
+    - geerlingguy.nginx
+    - nginx
+    - geerlingguy.docker
+    - irc
+    - webhooks
+    - seedbox
+    - websites
+    - glance
+    - mediacenter
+    - newsreaders
+    - retroarch
+    - minecraft

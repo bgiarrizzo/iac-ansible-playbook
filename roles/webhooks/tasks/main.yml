@@ -6,14 +6,14 @@
     dest: "/etc/nginx/sites-enabled/{{ item.server_name }}"
     mode: '0644'
   notify: restart_nginx
-  with_items: "{{ webhook_list }}"
+  loop: "{{ webhook_list }}"
 
 - name: Create Log Directory for Webhook Apps
   ansible.builtin.file:
     path: "/var/log/nginx/{{ item.server_name }}"
     state: directory
     mode: '0755'
-  with_items: "{{ webhook_list }}"
+  loop: "{{ webhook_list }}"
 
 - name: Test nginx config
   ansible.builtin.command: nginx -t
@@ -26,7 +26,7 @@
     repo: "{{ item.irc_repo }}"
     dest: "{{ item.irc_dest }}"
     version: main
-  with_items: "{{ webhook_list }}"
+  loop: "{{ webhook_list }}"
   become: true
   become_user: bgiarrizzo
 
@@ -41,13 +41,13 @@
     name: "{{ item.name }}"
     tag: latest
   
-  with_items: "{{ webhook_list }}"
+  loop: "{{ webhook_list }}"
 
 - name: Ensure webhook container is absent
   community.docker.docker_container:
     name: "{{ item.name }}"
     state: absent
-  with_items: "{{ webhook_list }}"
+  loop: "{{ webhook_list }}"
 
 - name: Ensure container is running
   community.docker.docker_container:
@@ -62,6 +62,6 @@
       TZ: Europe/Paris
       IRC_SERVER: "{{ item.irc_server }}"
       IRC_CHANNEL: "{{ item.irc_channel }}"
-  with_items: "{{ webhook_list }}"
+  loop: "{{ webhook_list }}"
 
     
